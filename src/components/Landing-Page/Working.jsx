@@ -1,12 +1,117 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger plugin with GSAP
+gsap.registerPlugin(ScrollTrigger);
 
 const Working = () => {
+  const stepsRef = useRef(null);
+  const popularRef = useRef(null);
+  const splitSectionRef = useRef(null);
+
+  useLayoutEffect(() => {
+    // Create GSAP context for scoped animation and proper cleanup
+    const ctx = gsap.context(() => {
+      // 1. Steps cards entrance animation (staggered fade up)
+      if (stepsRef.current) {
+        gsap.from(stepsRef.current.children, {
+          opacity: 0,
+          y: 55,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: stepsRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          }
+        });
+      }
+
+      // 2. Popular storage types tags entrance animation
+      if (popularRef.current) {
+        gsap.from(popularRef.current.children, {
+          opacity: 0,
+          y: 30,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: popularRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          }
+        });
+      }
+
+      // 3. For Renters (Left, x: -80) & For Hosts (Right, x: 80) alternating ScrollTrigger animation
+      if (splitSectionRef.current) {
+        const splitChildren = splitSectionRef.current.children;
+        if (splitChildren.length >= 2) {
+          // Left card: For Renters
+          gsap.from(splitChildren[0], {
+            opacity: 0,
+            x: -80,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: splitSectionRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            }
+          });
+
+          // Right card: For Hosts
+          gsap.from(splitChildren[1], {
+            opacity: 0,
+            x: 80,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: splitSectionRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            }
+          });
+        }
+      }
+
+      // 4. Feature Cards GSAP hover animation
+      const featureCards = gsap.utils.toArray('.feature-card');
+      featureCards.forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, {
+            y: -8,
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', // shadow-xl
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            y: 0,
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)', // shadow-lg / reset
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className='w-full flex flex-col items-center pt-14 gap-6 h-220'>
       <div className='text-[#2B7FFF] font-semibold '>How it Works</div>
       <div className='text-4xl font-bold'>Storage in three simple steps</div>
-      <div className='flex flex-row gap-16'>
-        <div className='host-container1 h-55 w-80 flex flex-col shadow-lg hover:scale-105 transition-transform rounded-2xl p-6 gap-4 '>
+      
+      {/* 3 Steps Cards */}
+      <div ref={stepsRef} className='flex flex-row gap-16'>
+        <div className='feature-card host-container1 h-55 w-80 flex flex-col shadow-lg rounded-2xl p-6 gap-4 '>
           <div className='flex flex-row justify-between pt-2 items-center'>
             <span className='bg-[#2B7FFF] text-white font-bold rounded-full px-4 py-2'>
               1
@@ -26,7 +131,7 @@ const Working = () => {
             <span className='text-[#71717B]'>Browse hundreds of local storage options near you.</span>
           </div>
         </div>
-        <div className='host-container2 h-55 w-80 flex flex-col shadow-lg rounded-2xl p-6 gap-4 hover:scale-105 transition-transform'>
+        <div className='feature-card host-container2 h-55 w-80 flex flex-col shadow-lg rounded-2xl p-6 gap-4'>
           <div className='flex flex-row justify-between pt-2 items-center'>
             <span className='bg-[#2B7FFF] text-white font-bold rounded-full px-4 py-2'>
               2
@@ -46,7 +151,7 @@ const Working = () => {
             <span className='text-[#71717B]'>Reserve your space with secure payments and verified hosts.</span>
           </div>
         </div>
-        <div className='host-container h-55 w-80 flex flex-col shadow-lg rounded-2xl p-6 gap-4 hover:scale-105 transition-transform' >
+        <div className='feature-card host-container h-55 w-80 flex flex-col shadow-lg rounded-2xl p-6 gap-4' >
           <div className=' flex flex-row justify-between pt-2 items-center' >
             <span className='bg-[#2B7FFF] text-white font-bold rounded-full px-4 py-2'>
               3
@@ -67,9 +172,11 @@ const Working = () => {
           </div>
         </div>
       </div>
+
+      {/* Popular Storage Types Section */}
       <div className='w-[90vw]'>
         <div className='text-4xl font-bold'>Popular Storage Types</div>
-        <div className='flex flex-row items-center gap-6 pt-3' >
+        <div ref={popularRef} className='flex flex-row items-center gap-6 pt-3' >
           <div className='host-container4 flex flex-row gap-2 justify-center  bg-[#F4F4F5] rounded-4xl py-1 px-6 items-center'>
             <span className='flex items-center'>
               <lord-icon
@@ -134,11 +241,13 @@ const Working = () => {
               Attic
             </span>
           </div>
-
         </div>
       </div>
-      <div className='flex flex-row justify-evenly w-[90vw]'>
-        <div className='h-[40vh] w-[30vw] shadow-xl rounded-xl flex flex-col justify-evenly p-4 hover:scale-105 transition-transform'>
+
+      {/* For Renters / For Hosts Alternating Section */}
+      <div ref={splitSectionRef} className='flex flex-row justify-evenly w-[90vw]'>
+        {/* Left card: For Renters */}
+        <div className='feature-card h-[40vh] w-[30vw] shadow-xl rounded-xl flex flex-col justify-evenly p-4'>
           <div className='flex flex-row items-center gap-2'>
             <div className='flex items-center bg-[#F4F4F5] rounded-lg px-1 py-1'>
               <lord-icon
@@ -193,7 +302,9 @@ const Working = () => {
             </span>
           </div>
         </div>
-        <div className='h-[40vh] w-[30vw] shadow-xl rounded-xl flex flex-col justify-evenly p-4 hover:scale-105 transition-transform'>
+
+        {/* Right card: For Hosts */}
+        <div className='feature-card h-[40vh] w-[30vw] shadow-xl rounded-xl flex flex-col justify-evenly p-4'>
           <div className='flex flex-row items-center gap-2'>
             <div className='flex items-center bg-[#F4F4F5] rounded-lg px-1 py-1'>
               <lord-icon
@@ -249,10 +360,6 @@ const Working = () => {
           </div>
         </div>
       </div>
-
-
-
-
     </div>
   );
 }

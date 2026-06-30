@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger plugin with GSAP
+gsap.registerPlugin(ScrollTrigger);
 
 const SearchBar = () => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+        // Create GSAP context for proper cleanup of ScrollTrigger animations
+        const ctx = gsap.context(() => {
+            gsap.from(containerRef.current, {
+                opacity: 0,
+                y: 60,
+                duration: 1.0,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: 'top 90%', // Triggers when the top of the element hits 90% viewport height
+                    toggleActions: 'play none none none', // Play once, no repeats
+                }
+            });
+        });
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <div className='flex items-center justify-center'>
+        <div ref={containerRef} className='flex items-center justify-center'>
             <div className='w-[90%] h-30  flex flex-row items-center justify-center gap-2 shadow-2xl rounded-2xl px-4 '>
                 <div className='w-[50%]  text-sm  '>
                     <div className='font-semibold'>City or Zip Code</div>
