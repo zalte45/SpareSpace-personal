@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import CardNav from './CardNav';
 import { gsap } from 'gsap';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const navbarRef = useRef(null);
@@ -74,8 +75,12 @@ const Navbar = () => {
 
                 {/* ─── CTA buttons */}
                 <div className='flex flex-row gap-4 font-semibold'>
-                    <button className='cursor-pointer hover:text-[#2B7FFF] transition-colors duration-200'>Sign In</button>
+                    {/* <button  className='cursor-pointer hover:text-[#2B7FFF] transition-colors duration-200'>
+                        Sign In
+                        </button> */}
+                        <Link to='/SignIn-Up'>
                     <button className='cursor-pointer w-30 bg-[#2B7FFF] py-2 rounded-full text-white hover:scale-105 transition-transform'>Get Started</button>
+                        </Link>
                 </div>
             </nav>
         </>
