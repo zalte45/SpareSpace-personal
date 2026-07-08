@@ -72,12 +72,46 @@ const Forgot = () => {
             console.log(res.status)
             console.log(data)
             if (res.ok) {
+                toast(res.data, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
                 console.log("otp sent")
                 setTimer(30);     // Reset timer
                 setIsTimer(true); // Start countdown
             }
+            if (!res.ok) {
+                toast("Something went wrong !", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+            }
         } catch (error) {
-            console.error(error)
+            toast(error, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         } finally {
             setIsOtpLoading(false)
         }
