@@ -3,7 +3,7 @@ import Dashboard from './components/Landing-Page/Dashboard'
 import Home from './components/Authentication/Home'
 import Forgot from './components/Authentication/Forgot'
 import Verify from './components/Authentication/Verify'
-import DashBoard from './components/DashBoard/DashBoard'
+import DashBoard from './components/HostInterface/Home'
 
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'

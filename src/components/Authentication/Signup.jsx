@@ -1,18 +1,24 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import SignIn from './SignIn'
 import { useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 
 const Signup = (props) => {
+  const [Role, setRole] = useState("")
+  useEffect(() => {    
+
+  }, [])
+  
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const [Form, setForm] = useState({
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    Role:""
   })
   const [state, setState] = useState(0);
 
@@ -88,7 +94,8 @@ const Signup = (props) => {
         body: JSON.stringify({
           username: Form.username,
           email: Form.email,
-          password: Form.password
+          password: Form.password,
+          role:Form.Role
         }),
         credentials: "include"
       })
@@ -133,7 +140,7 @@ const Signup = (props) => {
         theme: "light",
         transition: Bounce,
       });
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   }
@@ -155,7 +162,7 @@ const Signup = (props) => {
         transition={Bounce}
       />
       <div className='flex h-screen items-center justify-center text-black'>
-        <div className="h-120 w-90 rounded-3xl bg-white/40 backdrop-blur-md border border-white/10 shadow-2xl hover:transition-all duration-300F">
+        <div className="h-140 w-90 rounded-3xl bg-white/40 backdrop-blur-md border border-white/10 shadow-2xl hover:transition-all duration-300F">
           <div className='py-2 flex flex-col items-center gap-2'>
             <span className='text-2xl font-bold text-black'>
               Create Account
@@ -179,6 +186,18 @@ const Signup = (props) => {
             <div>
               <span className='px-2 text-black text-sm font-semibold'>Confirm password</span>
               <input onChange={handleChange} className='relative placeholder:text-[#71717B] bg-[#F6F6F7] rounded-sm w-80 px-4 py-2 outline-white outline-1' type="password" name='confirmPassword' id='' placeholder='Confirm password' value={Form.confirmPassword} />
+            </div>
+            <div className='flex justify-evenly items-center flex-row gap-2 w-80 pt-4 text-black'>
+              <button onClick={() => {
+                setRole("Host")
+                Form.Role="Host"
+                console.log(Form.Role)
+                 }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role==="Host" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Host</button>
+              <button onClick={() => {
+                setRole("Renter")
+                Form.Role="Renter"
+                console.log(Form.Role)
+                }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role==="Renter" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Renter</button>
             </div>
             <div className=' flex justify-evenly items-center  w-80 pt-4'>
               <button onClick={() => submitForm()} className='flex items-center justify-center w-80 bg-[#2B7FFF] px-4 py-2  rounded-sm cursor-pointer text-white hover:scale-105 transition-transform'>{isLoading ? (<ThreeDot color="#ffff" size="small" text="" textColor="" />) : ("Sign Up")}</button>
