@@ -1,19 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 
 const Menu = (props) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    useEffect(() => {
-      console.log(activeIndex)
-    }, [])
-    
+
+
     const [hoveredIndex, setHoveredIndex] = useState(null);
-    useEffect(() => {
-      console.log(props.ActivePage)
-    }, [])
-    
-    
+
+
+
 
     return (
         <motion.div
@@ -56,15 +52,15 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        
-                        onClick={() => { props.setActivePage("DashBoard"); setActiveIndex(0); console.log(props.ActivePage)  }}
+
+                        onClick={() => { props.setActivePage("DashBoard"); setActiveIndex(0); console.log(props.ActivePage) }}
                         onMouseEnter={() => setHoveredIndex(0)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-1 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}
                     >
                         {activeIndex === 0 && (
                             <motion.div
-                            
+
                                 layoutId="activeIndicator"
                                 className="absolute inset-0 bg-[#E9F2FF] rounded-xl -z-10"
                                 transition={{
@@ -77,7 +73,7 @@ const Menu = (props) => {
                         <AnimatePresence>
                             {hoveredIndex === 0 && activeIndex !== 0 && (
                                 <motion.div
-                                
+
                                     layoutId="hoverIndicator"
                                     className="absolute inset-0 bg-[#E9F2FF]/60 rounded-xl -z-10"
                                     initial={{ opacity: 0 }}
@@ -88,7 +84,7 @@ const Menu = (props) => {
                             )}
                         </AnimatePresence>
                         <motion.div
-                        
+
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
@@ -105,7 +101,7 @@ const Menu = (props) => {
                         <AnimatePresence mode="popLayout">
                             {!props.isCollapsed && (
                                 <motion.div
-                                
+
                                     key="label-dashboard"
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -187,7 +183,7 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {setActiveIndex(2); props.setActivePage("Booking");}}
+                        onClick={() => { setActiveIndex(2); props.setActivePage("Booking"); }}
                         onMouseEnter={() => setHoveredIndex(2)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item flex flex-row gap-2 p-2 cursor-pointer hostBtn-3 rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}
@@ -249,7 +245,7 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {setActiveIndex(3); props.setActivePage("Earning");}}
+                        onClick={() => { setActiveIndex(3); props.setActivePage("Earning"); }}
                         onMouseEnter={() => setHoveredIndex(3)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-4 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}
@@ -311,7 +307,7 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {setActiveIndex(4); props.setActivePage("Message")}}
+                        onClick={() => { setActiveIndex(4); props.setActivePage("Message") }}
                         onMouseEnter={() => setHoveredIndex(4)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-5 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}
@@ -373,7 +369,7 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {setActiveIndex(5); props.setActivePage("Analytics")}}
+                        onClick={() => { setActiveIndex(5); props.setActivePage("Analytics") }}
                         onMouseEnter={() => setHoveredIndex(5)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-6 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}
@@ -435,7 +431,7 @@ const Menu = (props) => {
                     <motion.div
                         layout
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {setActiveIndex(6); props.setActivePage("Profile")}}
+                        onClick={() => { setActiveIndex(6); props.setActivePage("Profile") }}
                         onMouseEnter={() => setHoveredIndex(6)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-7 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}

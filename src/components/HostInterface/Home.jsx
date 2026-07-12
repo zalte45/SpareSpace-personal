@@ -8,6 +8,7 @@ import Earning from './Earning';
 import Message from './Message';
 import Analytics from './Analytics';
 import MySpace from './MySpace'
+import ListSpace from './ListSpace'
 
 
 const Home = () => {
@@ -32,12 +33,13 @@ const Home = () => {
                     <Menu isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} ActivePage={ActivePage} setActivePage={setActivePage} />
                 </motion.div>
                 <div className='flex-1 h-screen '>
-                    {ActivePage === "DashBoard" && <DashBoard />}
+                    {ActivePage === "DashBoard" && <DashBoard ActivePage={ActivePage} setActivePage={setActivePage} />}
                     {ActivePage === "Booking" && <Booking />}
                     {ActivePage === "Profile" && <Profile />}
                     {ActivePage === "Earning" && <Earning />}
                     {ActivePage === "Message" && <Message />}
                     {ActivePage === "Analytics" && <Analytics />}
+                    {ActivePage === "ListSpace" && <ListSpace />}
                     {ActivePage === "MySpace" && <MySpace />}
                 </div>
             </div>

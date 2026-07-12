@@ -92,7 +92,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const DashBoard = () => {
+const DashBoard = ({ActivePage,setActivePage }) => {
   // Page states
   const [activeSpacesCount, setActiveSpacesCount] = useState(8);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -213,51 +213,6 @@ const DashBoard = () => {
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 3500);
-  };
-
-  // Handle Space creation logic
-  const handleCreateSpace = (e) => {
-    e.preventDefault();
-    setIsModalOpen(false);
-    
-    // Increment statistical spaces count
-    setActiveSpacesCount(prev => prev + 1);
-
-    // Create a new timeline activity
-    const newAct = {
-      id: Date.now(),
-      type: 'listing',
-      title: `Space "${newSpace.title}" listed`,
-      time: 'Just now',
-      desc: `Type: ${newSpace.type} · Size: ${newSpace.size} sq ft · Rate: $${newSpace.price}/mo`,
-      color: 'bg-purple-500'
-    };
-    setActivities(prev => [newAct, ...prev]);
-
-    // Add to transaction log (as a mock payment registration fee or listing creation confirmation)
-    const newTx = {
-      id: `TX-${Math.floor(1000 + Math.random() * 9000)}`,
-      name: 'Host System',
-      space: newSpace.title,
-      date: 'Jul 10, 2026',
-      amount: '$0.00',
-      status: 'Completed',
-      avatar: 'HS',
-      color: 'bg-slate-100 text-slate-600'
-    };
-    setTransactions(prev => [newTx, ...prev]);
-
-    // Show Success Toast
-    triggerToast(`"${newSpace.title}" successfully listed online!`, 'success');
-
-    // Reset Form fields
-    setNewSpace({
-      title: '',
-      location: '',
-      type: 'Garage',
-      price: '',
-      size: ''
-    });
   };
 
   // Filter lists based on Search input query
@@ -394,7 +349,7 @@ const DashBoard = () => {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setActivePage("ListSpace")}
               className="px-4.5 py-2.5 bg-[#2B7FFF] hover:bg-[#1A6EEF] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/10 transition duration-150 cursor-pointer"
             >
               <Plus className="w-4.5 h-4.5 stroke-[2.5]" />
@@ -431,7 +386,7 @@ const DashBoard = () => {
               </p>
             </div>
             {/* Sparkline integration */}
-            <div className="h-[35px] mt-4 overflow-hidden -mx-2">
+            <div className="h-8.75 mt-4 overflow-hidden -mx-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={[
                   { v: 1000 }, { v: 1400 }, { v: 1200 }, { v: 1900 }, 
@@ -528,7 +483,7 @@ const DashBoard = () => {
               </p>
             </div>
             {/* Sparkline Area chart */}
-            <div className="h-[35px] mt-4 overflow-hidden -mx-2">
+            <div className="h-8.75 mt-4 overflow-hidden -mx-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={[
                   { v: 1200 }, { v: 1100 }, { v: 1500 }, { v: 1800 }, 
@@ -736,7 +691,7 @@ const DashBoard = () => {
                     alt="Top performing garage storage space" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
                   <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-md">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span className="text-xs font-bold text-slate-800">4.9</span>
@@ -802,7 +757,7 @@ const DashBoard = () => {
               </div>
               <p className="text-xs font-semibold text-slate-400 mb-4">Review and accept booking requests for spaces.</p>
 
-              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-75 overflow-y-auto pr-1">
                 <AnimatePresence initial={false}>
                   {pendingRequests.length > 0 ? (
                     pendingRequests.map((req) => (
@@ -976,7 +931,7 @@ const DashBoard = () => {
             {/* Table */}
             <div className="overflow-x-auto">
               {filteredTransactions.length > 0 ? (
-                <table className="w-full text-left border-collapse min-w-[500px]">
+                <table className="w-full text-left border-collapse min-w-125">
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
                       <th className="pb-3 pl-2">Renter</th>
@@ -1049,7 +1004,7 @@ const DashBoard = () => {
                       className="relative"
                     >
                       {/* Circle indicator */}
-                      <span className={`absolute -left-[23.5px] top-1.5 w-3.5 h-3.5 rounded-full border-[3px] border-white shadow-sm ${act.color}`} />
+                      <span className={`absolute left-[-23.5px] top-1.5 w-3.5 h-3.5 rounded-full border-[3px] border-white shadow-sm ${act.color}`} />
                       
                       <div className="space-y-0.5">
                         <div className="flex items-center justify-between">
@@ -1076,124 +1031,7 @@ const DashBoard = () => {
 
       </div>
 
-      {/* 6. ADD SPACE MODAL OVERLAY */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            {/* Modal Dialog container */}
-            <motion.div
-              initial={{ scale: 0.94, opacity: 0, y: 15 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.94, opacity: 0, y: 15 }}
-              transition={{ type: "spring", stiffness: 380, damping: 26 }}
-              className="relative bg-white rounded-[24px] shadow-2xl p-6 w-full max-w-md border border-slate-100 z-10"
-            >
-              {/* Close Button */}
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-4.5 right-4.5 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-50 transition cursor-pointer"
-              >
-                <X className="w-4.5 h-4.5" />
-              </button>
-
-              <h3 className="text-lg font-bold text-slate-900">List a New Space</h3>
-              <p className="text-xs text-slate-400 font-semibold mt-1 mb-6">List a new vacant storage space on SpareSpace.</p>
-
-              <form onSubmit={handleCreateSpace} className="space-y-4">
-                <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Space Title</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Climate-Controlled Attic Vault"
-                    value={newSpace.title}
-                    onChange={(e) => setNewSpace({...newSpace, title: e.target.value})}
-                    className="w-full px-4.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Location</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Seattle, WA"
-                      value={newSpace.location}
-                      onChange={(e) => setNewSpace({...newSpace, location: e.target.value})}
-                      className="w-full px-4.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Space Type</label>
-                    <select
-                      value={newSpace.type}
-                      onChange={(e) => setNewSpace({...newSpace, type: e.target.value})}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent bg-white transition-all text-slate-700"
-                    >
-                      <option value="Garage">Garage</option>
-                      <option value="Basement">Basement</option>
-                      <option value="Attic">Attic</option>
-                      <option value="Closet">Closet</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Monthly Price ($)</label>
-                    <input
-                      type="number"
-                      required
-                      placeholder="e.g. 150"
-                      value={newSpace.price}
-                      onChange={(e) => setNewSpace({...newSpace, price: e.target.value})}
-                      className="w-full px-4.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Size (sq ft)</label>
-                    <input
-                      type="number"
-                      required
-                      placeholder="e.g. 120"
-                      value={newSpace.size}
-                      onChange={(e) => setNewSpace({...newSpace, size: e.target.value})}
-                      className="w-full px-4.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-50 transition cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#2B7FFF] hover:bg-[#1A6EEF] text-white text-xs font-bold shadow-md shadow-blue-500/10 transition cursor-pointer"
-                  >
-                    Add Space
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+     
 
     </motion.div>
   );
