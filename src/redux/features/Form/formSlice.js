@@ -13,27 +13,27 @@
     pincode: "",
 
     // Availability
-    availableImmediately: true,
-    availableFrom: "2026-07-15",
-    availableUntil: "2026-12-31",
+    availableImmediately: false,
+    availableFrom: "",
+    availableUntil: "",
 
     // Rental
     minDuration: "1 Month",
     maxDuration: "12 Months",
-    price: "2500",
-    securityDeposit: "5000",
-    lateFee: "250",
+    price: "",
+    securityDeposit: "",
+    lateFee: "",
 
     // Policies
     cancellationPolicy: "moderate",
 
     bookingPrefs: {
-      instantBooking: true,
+      instantBooking: false,
       manualApproval: false,
-      weekendBookings: true,
+      weekendBookings: false,
       longTermOnly: false,
-      recurringRentals: true,
-      autoRenewal: true,
+      recurringRentals: false,
+      autoRenewal: false,
     },
 
     // Space Details
@@ -43,12 +43,12 @@
     rules: "",
 
     amenities: {
-      climateControlled: true,
-      cctvSurveillance: true,
-      lockAvailable: true,
-      lighting: true,
+      climateControlled: false,
+      cctvSurveillance: false,
+      lockAvailable: false,
+      lighting: false,
       electricity: false,
-      fireSafety: true,
+      fireSafety: false,
       insurance: false,
       loadingAssistance: false,
     },
@@ -73,6 +73,14 @@
         state.bookingPrefs[name] = value;
       },
 
+      loadDraft: (state, action) => {
+        return {
+          ...state,
+          ...action.payload,
+          images: []
+        };
+      },
+
       resetForm: () => initialState,
     },
   });
@@ -81,6 +89,7 @@
     updateField,
     updateAmenity,
     updateBookingPref,
+    loadDraft,
     resetForm,
   } = formSlice.actions;
 

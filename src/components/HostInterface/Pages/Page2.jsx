@@ -15,7 +15,7 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 
-const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleFileChange,handleDeleteImage }) => {
+const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleFileChange,handleDeleteImage, handleSaveDraft }) => {
 
 
 
@@ -39,43 +39,7 @@ const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
     { icon: Maximize2, text: 'High resolution', desc: 'Avoid blurry, pixelated or extremely dark photos.', color: 'text-indigo-500 bg-indigo-50' }
   ];
 
-  // Checklist items mapping current progress
-  useEffect(() => {
-    setCheckListItems(
-      checkListItems.map((item, index) => {
-        switch (index) {
-          case 0: return {
-            ...item,
-            completed: formData.title.trim() !== ""
-          }
 
-          case 1: return {
-            ...item,
-            completed: [
-              formData.pincode,
-              formData.street,
-              formData.city,
-              formData.state,
-            ].every((field) => field.trim() !== ""),
-          };
-
-          case 2: return {
-            ...item,
-            completed: formData.category.trim() !== "",
-          };
-
-          case 3: return {
-            ...item,
-            completed: formData.description.trim() !== "",
-          };
-          default:
-            return item
-        }
-      }
-      )
-    )
-
-  }, [formData])
 
 
 
@@ -351,6 +315,7 @@ const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="flex items-center gap-3">
                   <motion.button
                     type="button"
+                    onClick={handleSaveDraft}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="px-6 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors cursor-pointer"
@@ -417,7 +382,7 @@ const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: progress }}
+                    animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
                     className="h-full bg-[#2B7FFF] rounded-full"
                   />

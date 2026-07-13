@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { updateBookingPref } from '../../../redux/features/Form/formSlice';
@@ -20,9 +20,13 @@ import {
   ShieldAlert
 } from 'lucide-react';
 
-const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems }) => {
+const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleSaveDraft }) => {
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    console.log(formData.availableFrom)
+    console.log(formData.availableUntil)
+  }, [])
+  
   const handleTogglePref = (prefKey) => {
     dispatch(updateBookingPref({
       name: prefKey,
@@ -258,36 +262,33 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                   {/* Available From */}
                   <motion.div
                     whileHover={{ scale: 1.02, y: -2 }}
-                    className="relative p-4.5 rounded-xl border border-slate-200 bg-[#FBFDFE] flex items-center justify-between cursor-pointer group hover:border-[#2B7FFF] transition-all"
+                    className=" p-4.5 rounded-xl border border-slate-200 bg-[#FBFDFE] flex items-center justify-between cursor-pointer group hover:border-[#2B7FFF] transition-all"
                   >
                     <div className="space-y-1">
                       <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available From</span>
-                      <span className="block text-sm font-bold text-slate-800">{formData.availableFrom}</span>
                     </div>
-                    <Calendar className="w-5 h-5 text-slate-400 group-hover:text-[#2B7FFF] transition-colors" />
                     <input
                       type="date"
                       value={formData.availableFrom}
                       onChange={(e) => handleChangeForm("availableFrom", e.target.value)}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className=" inset-0  cursor-pointer"
                     />
                   </motion.div>
 
                   {/* Available Until */}
                   <motion.div
                     whileHover={{ scale: 1.02, y: -2 }}
-                    className="relative p-4.5 rounded-xl border border-slate-200 bg-[#FBFDFE] flex items-center justify-between cursor-pointer group hover:border-[#2B7FFF] transition-all"
+                    className=" p-4.5 rounded-xl border border-slate-200 bg-[#FBFDFE] flex items-center justify-between cursor-pointer group hover:border-[#2B7FFF] transition-all"
                   >
                     <div className="space-y-1">
                       <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Until</span>
-                      <span className="block text-sm font-bold text-slate-800">{formData.availableUntil}</span>
+                      
                     </div>
-                    <Calendar className="w-5 h-5 text-slate-400 group-hover:text-[#2B7FFF] transition-colors" />
                     <input
                       type="date"
                       value={formData.availableUntil}
                       onChange={(e) => handleChangeForm("availableUntil", e.target.value)}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className=" inset-0  cursor-pointer"
                     />
                   </motion.div>
 
@@ -486,7 +487,7 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                             {/* Inner Circle Check */}
                             <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${isSelected ? 'border-[#2B7FFF] bg-[#2B7FFF] text-white' : 'border-slate-300 bg-white'
                               }`}>
-                              {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                              {isSelected && <Check className="w-2.5 h-2.5 stroke-3" />}
                             </div>
                           </div>
 
@@ -516,6 +517,7 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="flex items-center gap-3">
                   <motion.button
                     type="button"
+                    onClick={handleSaveDraft}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="px-6 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors cursor-pointer"
@@ -550,12 +552,12 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-bold text-slate-700">Listing Progress</span>
-                  <span className="font-extrabold text-[#2B7FFF]">80%</span>
+                  <span className="font-extrabold text-[#2B7FFF]">{progress}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: progress }}
+                    animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
                     className="h-full bg-[#2B7FFF] rounded-full"
                   />
@@ -570,7 +572,9 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="space-y-2.5">
                   {checkListItems.map((item) => (
                     <div key={item.id} className="flex items-center gap-3 text-xs">
+                      
                       {item.completed ? (
+                        
                         <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 stroke-[3.5]" />
                         </div>

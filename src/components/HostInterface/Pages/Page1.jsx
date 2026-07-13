@@ -13,28 +13,12 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handleChangeForm,checkListItems,setCheckListItems }) => {
-  // Calculate field completion for interactive progress tracking
-  const titleCompleted = formData.title.trim().length > 0;
-  const descCompleted = formData.description.trim().length > 0;
-  const categoryCompleted = formData.category !== '';
-  const addressCompleted = formData.street.trim().length > 0 &&
-    formData.city.trim().length > 0 &&
-    formData.state.trim().length > 0 &&
-    formData.pincode.trim().length > 0;
-
-  // Each field in Step 1 contributes 5% to the overall listing progress, totaling 20% for Step 1
-
-
+const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handleChangeForm,checkListItems,setCheckListItems,handleSaveDraft }) => {
 
   useEffect(() => {
-    const newProgress = (titleCompleted ? 5 : 0) +
-      (descCompleted ? 5 : 0) +
-      (categoryCompleted ? 5 : 0) +
-      (addressCompleted ? 5 : 0);
-    setProgress(newProgress)
-  }, [formData])
-
+    console.log(progress)
+  }, [])
+  
 
 
   // Steps definition for the Stepper
@@ -56,16 +40,7 @@ const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handl
     { id: 'warehouse', label: 'Warehouse', icon: Building, description: 'Large scale commercial warehouse' }
   ];
 
-  // Checklist items for the progress tracker
-  const checklistItems = [
-    { id: 'title', label: 'Title', completed: titleCompleted },
-    { id: 'description', label: 'Description', completed: descCompleted },
-    { id: 'category', label: 'Category', completed: categoryCompleted },
-    { id: 'address', label: 'Address', completed: addressCompleted },
-    { id: 'images', label: 'Images', completed: false, isFuture: true },
-    { id: 'availability', label: 'Availability', completed: false, isFuture: true },
-    { id: 'details', label: 'Details', completed: false, isFuture: true }
-  ];
+
 
   // Framer Motion Animation Variants
   const pageVariants = {
@@ -240,7 +215,7 @@ const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handl
                           key={cat.id}
                           whileHover={{ scale: 1.03, y: -2 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => handleChangeForm("category",cat.label)}
+                          onClick={() => handleChangeForm("category", cat.id)}
                           className={`p-4 rounded-xl border flex flex-col items-center justify-center text-center gap-3 transition-all duration-300 cursor-pointer ${isSelected
                             ? 'border-[#2B7FFF] bg-blue-50/20 shadow-[0_0_15px_rgba(43,127,255,0.12)] text-[#2B7FFF]'
                             : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.02)]'
@@ -326,6 +301,7 @@ const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handl
                 <div className="flex items-center gap-3">
                   <motion.button
                     type="button"
+                    onClick={handleSaveDraft}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="px-6 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors cursor-pointer"
@@ -363,7 +339,7 @@ const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handl
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: parseInt(progress) }}
+                    animate={{ width: `${progress}%` }}
 
                     transition={{ duration: 0.5, ease: 'easeOut' }}
                     className="h-full bg-[#2B7FFF] rounded-full"
@@ -377,27 +353,30 @@ const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handl
                   Required Checklist
                 </h5>
                 <div className="space-y-2.5">
-                  {checklistItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 text-xs">
-                      {item.completed ? (
-                        <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 stroke-[3.5]" />
-                        </div>
-                      ) : (
-                        <div className="w-4 h-4 rounded-full border-2 border-slate-200 bg-white shrink-0" />
-                      )}
-                      <span
-                        className={`font-semibold transition-colors ${item.completed
-                          ? 'text-slate-400 line-through decoration-slate-300'
-                          : item.isFuture
-                            ? 'text-slate-400 font-medium'
-                            : 'text-slate-600'
-                          }`}
-                      >
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
+                  {checkListItems.map((item, index) => {
+                    const isFuture = index > 3;
+                    return (
+                      <div key={item.id} className="flex items-center gap-3 text-xs">
+                        {item.completed ? (
+                          <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 stroke-[3.5]" />
+                          </div>
+                        ) : (
+                          <div className="w-4 h-4 rounded-full border-2 border-slate-200 bg-white shrink-0" />
+                        )}
+                        <span
+                          className={`font-semibold transition-colors ${item.completed
+                            ? 'text-slate-400 line-through decoration-slate-300'
+                            : isFuture
+                              ? 'text-slate-400 font-medium'
+                              : 'text-slate-600'
+                            }`}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

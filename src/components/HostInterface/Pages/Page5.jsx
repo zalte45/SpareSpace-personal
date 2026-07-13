@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
@@ -23,7 +24,8 @@ import {
   Truck
 } from 'lucide-react';
 
-const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFormData,checkListItems,setChecklistItems }) => {
+
+const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFormData,checkListItems,setChecklistItems, handleSaveDraft, handlePublish }) => {
   // Steps definition for the Stepper
   const steps = [
     { id: 1, label: 'Basic Info', completed: false },
@@ -35,12 +37,12 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
 
   // Dummy uploaded images for display
   const images = [
-    { id: 1, url: 'https://images.unsplash.com/photo-1595215031158-6811529949f6?q=80&w=600&auto=format&fit=crop', label: 'Main Space' },
-    { id: 2, url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop', label: 'Entrance View' },
-    { id: 3, url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=600&auto=format&fit=crop', label: 'Shelving Detail' },
-    { id: 4, url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=600&auto=format&fit=crop', label: 'Inside Storage' },
-    { id: 5, url: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?q=80&w=600&auto=format&fit=crop', label: 'Alternative Angle' },
-    { id: 6, url: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?q=80&w=600&auto=format&fit=crop', label: 'Security Detail' },
+    { id: 1, url: '', label: '' },
+    { id: 2, url: '', label: '' },
+    { id: 3, url: '', label: '' },
+    { id: 4, url: '', label: '' },
+    { id: 5, url: '', label: '' },
+    { id: 6, url: '', label: '' },
   ];
 
   const formatDate = (dateStr) => {
@@ -49,6 +51,9 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
     if (isNaN(date.getTime())) return dateStr;
     return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
+  useEffect(() => {
+  console.log(formData)
+}, [])
 
   // Amenities checklist
   const amenities = [
@@ -221,7 +226,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Category</span>
                     <span className="inline-block mt-1 px-2.5 py-1 rounded-lg bg-blue-50 text-[#2B7FFF] text-[10px] font-extrabold uppercase tracking-wide">
-                      {formData.category || 'N/A'}
+                      {formData.category ? formData.category.replace('_', ' ') : 'N/A'}
                     </span>
                   </div>
                   <div>
@@ -290,10 +295,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Area Size</span>
                     <span className="text-sm font-bold text-slate-800 mt-0.5 block">{formData.area || '0'} {formData.unit}</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Max Capacity</span>
-                    <span className="text-sm font-bold text-slate-800 mt-0.5 block">500 kg</span>
-                  </div>
+                
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Access Hours</span>
                     <span className="text-sm font-bold text-slate-800 mt-0.5 block">{formData.accessHours || 'N/A'}</span>
@@ -436,6 +438,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
               <div className="flex items-center gap-3">
                 <motion.button
                   type="button"
+                  onClick={handleSaveDraft}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-5 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors cursor-pointer"
@@ -454,6 +457,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 
                 <motion.button
                   type="button"
+                  onClick={handlePublish}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-6 py-3 text-sm font-semibold text-white bg-[#2B7FFF] hover:bg-[#1A6EEE] rounded-xl flex items-center gap-2 shadow-[0_4px_15px_rgba(43,127,255,0.2)] transition-colors cursor-pointer"
@@ -480,7 +484,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: progress }}
+                    animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
                     className="h-full bg-emerald-500 rounded-full"
                   />

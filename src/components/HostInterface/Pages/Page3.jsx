@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { updateAmenity } from '../../../redux/features/Form/formSlice';
@@ -23,7 +23,7 @@ import {
   Sliders
 } from 'lucide-react';
 
-const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems }) => {
+const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleSaveDraft }) => {
   const dispatch = useDispatch();
 
   const handleToggle = (amenityKey) => {
@@ -32,6 +32,10 @@ const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
       value: !formData.amenities[amenityKey]
     }));
   };
+  useEffect(() => {
+    console.log(progress)
+  }, [])
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -381,6 +385,7 @@ const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="flex items-center gap-3">
                   <motion.button
                     type="button"
+                    onClick={handleSaveDraft}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="px-6 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors cursor-pointer"
@@ -403,7 +408,7 @@ const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
             </div>
           </motion.div>
 
-          {/* RIGHT PREVIEW & LISTING PROGRESS (30%) */}
+          {/*RIGHT PREVIEW & LISTING PROGRESS*/}
           <motion.div
             variants={sidebarVariants}
             className="lg:col-span-3 lg:sticky lg:top-8 space-y-6"
@@ -418,12 +423,12 @@ const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-bold text-slate-700">Listing Progress</span>
-                  <span className="font-extrabold text-[#2B7FFF]">60%</span>
+                  <span className="font-extrabold text-[#2B7FFF]">{`${progress}%`}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: progress }}
+                    animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
                     className="h-full bg-[#2B7FFF] rounded-full"
                   />
