@@ -25,6 +25,9 @@ import {
 
 const Page3 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleSaveDraft }) => {
   const dispatch = useDispatch();
+  useEffect(() => {
+      console.log(progress)
+    }, [])
 
   const handleToggle = (amenityKey) => {
     dispatch(updateAmenity({

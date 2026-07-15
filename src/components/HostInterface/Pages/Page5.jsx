@@ -1,13 +1,13 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Check, 
-  MapPin, 
-  Pencil, 
-  Sparkles, 
-  DollarSign, 
+import {
+  ArrowLeft,
+  Check,
+  MapPin,
+  Pencil,
+  Sparkles,
+  DollarSign,
   Info,
   Layers,
   Clock,
@@ -25,7 +25,13 @@ import {
 } from 'lucide-react';
 
 
-const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFormData,checkListItems,setChecklistItems, handleSaveDraft, handlePublish }) => {
+const Page5 = ({ ActivePage, setActivePage, progress, setProgress, formData, setFormData, checkListItems, setChecklistItems, handleSaveDraft, handlePublish }) => {
+  useEffect(() => {
+      checkListItems.map((item,index) => {
+        console.log(item)
+      }
+      )
+    }, [])
   // Steps definition for the Stepper
   const steps = [
     { id: 1, label: 'Basic Info', completed: false },
@@ -37,12 +43,8 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
 
   // Dummy uploaded images for display
   const images = [
-    { id: 1, url: '', label: '' },
-    { id: 2, url: '', label: '' },
-    { id: 3, url: '', label: '' },
-    { id: 4, url: '', label: '' },
-    { id: 5, url: '', label: '' },
-    { id: 6, url: '', label: '' },
+    { id: null, url: '', label: '' },
+
   ];
 
   const formatDate = (dateStr) => {
@@ -52,8 +54,8 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
     return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
   useEffect(() => {
-  console.log(formData)
-}, [])
+    console.log(formData)
+  }, [])
 
   // Amenities checklist
   const amenities = [
@@ -68,13 +70,13 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
   ];
 
   // Checklist for review step
-  
+
 
   // Framer Motion Animation Variants
   const pageVariants = {
     hidden: { opacity: 0, y: 15 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: 'easeOut', staggerChildren: 0.05 }
     }
@@ -82,37 +84,37 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
 
   const headerVariants = {
     hidden: { opacity: 0, y: -20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: 'spring', stiffness: 100, damping: 15 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 100, damping: 15 }
     }
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 15 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: 'spring', stiffness: 100, damping: 15 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 100, damping: 15 }
     }
   };
 
   const sidebarVariants = {
     hidden: { opacity: 0, x: 30 },
-    visible: { 
-      opacity: 1, 
-      x: 0, 
-      transition: { type: 'spring', stiffness: 80, damping: 14 } 
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: 'spring', stiffness: 80, damping: 14 }
     }
   };
 
   const successCardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      transition: { delay: 0.3, type: 'spring', stiffness: 100, damping: 12 } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { delay: 0.3, type: 'spring', stiffness: 100, damping: 12 }
     }
   };
 
@@ -124,10 +126,10 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
       className="h-full overflow-y-auto bg-[#FBFDFE] text-slate-800 font-sans selection:bg-[#2B7FFF]/10 selection:text-[#2B7FFF] scrollbar-thin"
     >
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        
+
         {/* 1. PAGE HEADER */}
         <motion.header variants={headerVariants} className="space-y-4">
-          <button 
+          <button
             onClick={() => setActivePage(4)}
             className="group flex items-center gap-2 text-slate-500 hover:text-[#2B7FFF] transition-colors text-sm font-semibold cursor-pointer"
           >
@@ -136,7 +138,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
             </motion.span>
             Back to Availability
           </button>
-          
+
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 flex items-center gap-2">
               Review & Publish
@@ -149,7 +151,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
         </motion.header>
 
         {/* 2. PROGRESS STEPPER */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.5 }}
@@ -158,21 +160,20 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
           <div className="relative flex items-center justify-between w-full">
             {/* Background Connector Line */}
             <div className="absolute top-5 left-0 right-0 h-0.5 bg-slate-100 -translate-y-1/2 z-0" />
-            
+
             {steps.map((step, idx) => {
               const isCompleted = step.completed;
               const isActive = step.active;
-              
+
               return (
                 <div key={step.id} className="relative z-10 flex flex-col items-center flex-1">
-                  <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                      isActive 
-                        ? 'bg-[#2B7FFF] text-white ring-4 ring-blue-100' 
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${isActive
+                        ? 'bg-[#2B7FFF] text-white ring-4 ring-blue-100'
                         : isCompleted
                           ? 'bg-[#2B7FFF]/10 border-2 border-[#2B7FFF] text-[#2B7FFF]'
                           : 'bg-white border-2 border-slate-200 text-slate-400 cursor-not-allowed'
-                    }`}
+                      }`}
                   >
                     {isCompleted && !isActive ? (
                       <Check className="w-4 h-4 stroke-3" />
@@ -180,10 +181,9 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                       step.id
                     )}
                   </div>
-                  <span 
-                    className={`mt-2.5 text-xs font-semibold tracking-wide uppercase hidden sm:block ${
-                      isActive ? 'text-slate-900 font-bold' : 'text-slate-400'
-                    }`}
+                  <span
+                    className={`mt-2.5 text-xs font-semibold tracking-wide uppercase hidden sm:block ${isActive ? 'text-slate-900 font-bold' : 'text-slate-400'
+                      }`}
                   >
                     {step.label}
                   </span>
@@ -195,15 +195,15 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
 
         {/* 3. MAIN CONTENT GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-start">
-          
+
           {/* LEFT SECTION (70%) */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* CARD 1: Basic Information */}
             <motion.div variants={cardVariants} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-sm font-bold text-slate-800">Basic Information</h3>
-                <button 
+                <button
                   onClick={() => setActivePage(1)}
                   className="p-2 rounded-lg text-slate-400 hover:text-[#2B7FFF] hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
                 >
@@ -243,7 +243,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
             <motion.div variants={cardVariants} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-sm font-bold text-slate-800">Photo Gallery</h3>
-                <button 
+                <button
                   onClick={() => setActivePage(2)}
                   className="p-2 rounded-lg text-slate-400 hover:text-[#2B7FFF] hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
                 >
@@ -255,9 +255,9 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 {formData.images && formData.images.length > 0 ? (
                   formData.images.map((img, idx) => (
                     <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm border border-slate-100 group">
-                      <img 
-                        src={URL.createObjectURL(img.file)} 
-                        alt={`Uploaded Preview ${idx + 1}`} 
+                      <img
+                        src={URL.createObjectURL(img.file)}
+                        alt={`Uploaded Preview ${idx + 1}`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       {idx === 0 && (
@@ -277,7 +277,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
             <motion.div variants={cardVariants} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-sm font-bold text-slate-800">Space Details & Amenities</h3>
-                <button 
+                <button
                   onClick={() => setActivePage(3)}
                   className="p-2 rounded-lg text-slate-400 hover:text-[#2B7FFF] hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
                 >
@@ -295,7 +295,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Area Size</span>
                     <span className="text-sm font-bold text-slate-800 mt-0.5 block">{formData.area || '0'} {formData.unit}</span>
                   </div>
-                
+
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Access Hours</span>
                     <span className="text-sm font-bold text-slate-800 mt-0.5 block">{formData.accessHours || 'N/A'}</span>
@@ -328,7 +328,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
             <motion.div variants={cardVariants} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-sm font-bold text-slate-800">Availability & Preferences</h3>
-                <button 
+                <button
                   onClick={() => setActivePage(4)}
                   className="p-2 rounded-lg text-slate-400 hover:text-[#2B7FFF] hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
                 >
@@ -363,7 +363,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                       {formData.cancellationPolicy ? `${formData.cancellationPolicy.charAt(0).toUpperCase() + formData.cancellationPolicy.slice(1)} Policy` : 'N/A'}
                     </span>
                   </div>
-                  
+
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Booking Settings</span>
                     <div className="flex flex-wrap gap-1.5">
@@ -401,14 +401,14 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                   <span className="font-semibold text-slate-500">Estimated Monthly Earnings</span>
                   <span className="font-bold text-slate-800">₹{formData.price || '0'}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center text-xs text-slate-500">
                   <span className="font-semibold flex items-center gap-1.5">
                     SpareSpace Service Fee <span className="text-[10px] text-slate-400">(10%)</span>
                   </span>
                   <span className="font-bold text-rose-500">- ₹{(Number(formData.price || 0) * 0.1).toFixed(0)}</span>
                 </div>
-                
+
                 <div className="pt-3 border-t border-slate-100 flex justify-between items-center text-sm">
                   <span className="font-extrabold text-slate-800">Your Estimated Payout</span>
                   <span className="font-extrabold text-[#2B7FFF]">₹{(Number(formData.price || 0) * 0.9).toFixed(0)} / month</span>
@@ -434,7 +434,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
               >
                 <ArrowLeft className="w-4 h-4" /> Previous
               </motion.button>
-              
+
               <div className="flex items-center gap-3">
                 <motion.button
                   type="button"
@@ -445,7 +445,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 >
                   Save as Draft
                 </motion.button>
-                
+
                 <motion.button
                   type="button"
                   whileHover={{ scale: 1.02 }}
@@ -454,7 +454,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 >
                   Preview Listing
                 </motion.button>
-                
+
                 <motion.button
                   type="button"
                   onClick={handlePublish}
@@ -470,7 +470,7 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
           </div>
 
           {/* RIGHT PREVIEW & LISTING COMPLETION (30%) */}
-          <motion.div 
+          <motion.div
             variants={sidebarVariants}
             className="lg:col-span-3 lg:sticky lg:top-8 space-y-6"
           >
@@ -479,10 +479,10 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-bold text-slate-700">Setup Completion</span>
-                  <span className="font-extrabold text-emerald-500">100%</span>
+                  <span className="font-extrabold text-emerald-500">{progress}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -498,14 +498,14 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
                 </h5>
                 <div className="space-y-2.5">
                   {checkListItems.map((item, idx) => (
-                    <motion.div 
-                      key={item.id} 
+                    <motion.div
+                      key={item.id}
                       initial={{ opacity: 0, x: -5 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 * idx, duration: 0.3 }}
                       className="flex items-center gap-3 text-xs"
                     >
-                      <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                      <div className={`w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0`}>
                         <Check className="w-3 h-3 stroke-[3.5]" />
                       </div>
                       <span className="font-semibold text-slate-400 line-through decoration-slate-300">
@@ -517,17 +517,17 @@ const Page5 = ({ ActivePage, setActivePage,progress, setProgress,formData,setFor
               </div>
 
               {/* Green Success Card */}
-              <motion.div 
+              <motion.div
                 variants={successCardVariants}
-                className="p-4.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-center space-y-1.5"
+                className={`p-4.5 rounded-xl ${progress===100?"bg-emerald-50 border border-emerald-100 text-emerald-800":"bg-red-50 border border-red-100 text-red-800"}  text-center space-y-1.5`}
               >
-                <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
+                <div className={`w-8 h-8 rounded-full ${progress===100?"bg-emerald-500":"bg-red-500"} text-white flex items-center justify-center mx-auto shadow-md`}>
                   <Check className="w-4 h-4 stroke-3" />
                 </div>
                 <div className="space-y-0.5">
                   <h6 className="text-xs font-bold">Listing Approved!</h6>
-                  <p className="text-[10px] font-medium text-emerald-600 leading-snug">
-                    Your listing is complete and ready to be published.
+                  <p className={`text-[10px] font-medium  leading-snug`}>
+                    {progress===100 ? "Your listing is complete and ready to be published.":"Your listing is incomplete and not ready to be published."}
                   </p>
                 </div>
               </motion.div>

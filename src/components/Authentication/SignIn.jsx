@@ -86,7 +86,7 @@ const SignIn = (props) => {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("/")
+          navigate("/DashBoard")
         }, 1500);
       } else {
         toast.error(data.Message || 'Invalid email or password', {

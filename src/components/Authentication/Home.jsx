@@ -6,8 +6,7 @@ import { useState } from 'react';
 
 
 const Home = () => {
-    
-  const [IsClicked, setIsClicked] = useState(false)
+    const [IsClicked, setIsClicked] = useState(false)
     return (
         <div className="w-full h-screen bg-cover bg-center overflow-hidden">
             {IsClicked ? <Signup IsClicked={IsClicked} setIsClicked={setIsClicked} /> : <SignIn setIsClicked={setIsClicked} IsClicked={IsClicked} />}

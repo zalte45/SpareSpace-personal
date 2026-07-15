@@ -15,6 +15,7 @@ const ListSpace = () => {
   const [progress, setProgress] = useState(100)
   useEffect(() => {
     console.log(progress)
+    console.log(formData)
   }, []);
 
 
@@ -95,8 +96,9 @@ const ListSpace = () => {
       (availabilityCompleted ? 20 : 0) +
       (reviewCompleted ? 20 : 0);
 
-    console.log(detailsCompleted)
+    
     setProgress(newProgress);
+    console.log(newProgress)
 
 
 

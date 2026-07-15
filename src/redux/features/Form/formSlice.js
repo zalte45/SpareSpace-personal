@@ -1,10 +1,10 @@
   import { createSlice } from "@reduxjs/toolkit";
 
   const initialState = {
+    images:[],
     title: "",
     description: "",
     category: "",
-    images:[],
 
     // Location
     street: "",

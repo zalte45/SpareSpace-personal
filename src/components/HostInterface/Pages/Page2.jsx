@@ -15,11 +15,13 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 
-const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleFileChange,handleDeleteImage, handleSaveDraft }) => {
+const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleFileChange, handleDeleteImage, handleSaveDraft }) => {
+  useEffect(() => {
+    console.log(progress)
+  }, [])
 
 
 
-  
 
   // Steps definition for the Stepper
   const steps = [
@@ -213,7 +215,7 @@ const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
               </motion.div>
 
               {/* Image Preview Grid -placed in notepad*/}
-               <div className="space-y-4">
+              <div className="space-y-4">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   Uploaded Photos
                   <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-extrabold">
@@ -298,7 +300,7 @@ const Page2 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                     </AnimatePresence>
                   </motion.div>
                 )}
-              </div> 
+              </div>
 
               {/* Navigation Controls */}
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">

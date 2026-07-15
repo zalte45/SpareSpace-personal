@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { updateBookingPref } from '../../../redux/features/Form/formSlice';
@@ -21,12 +21,15 @@ import {
 } from 'lucide-react';
 
 const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, handleChangeForm, checkListItems, setCheckListItems, handleSaveDraft }) => {
+  useEffect(() => {
+    console.log(progress)
+  }, [])
   const dispatch = useDispatch();
   useEffect(() => {
     console.log(formData.availableFrom)
     console.log(formData.availableUntil)
   }, [])
-  
+
   const handleTogglePref = (prefKey) => {
     dispatch(updateBookingPref({
       name: prefKey,
@@ -174,10 +177,10 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div key={step.id} className="relative z-10 flex flex-col items-center flex-1">
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${isActive
-                        ? 'bg-[#2B7FFF] text-white ring-4 ring-blue-100'
-                        : isCompleted
-                          ? 'bg-[#2B7FFF]/10 border-2 border-[#2B7FFF] text-[#2B7FFF]'
-                          : 'bg-white border-2 border-slate-200 text-slate-400 cursor-not-allowed'
+                      ? 'bg-[#2B7FFF] text-white ring-4 ring-blue-100'
+                      : isCompleted
+                        ? 'bg-[#2B7FFF]/10 border-2 border-[#2B7FFF] text-[#2B7FFF]'
+                        : 'bg-white border-2 border-slate-200 text-slate-400 cursor-not-allowed'
                       }`}
                   >
                     {isCompleted && !isActive ? (
@@ -282,7 +285,7 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                   >
                     <div className="space-y-1">
                       <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Until</span>
-                      
+
                     </div>
                     <input
                       type="date"
@@ -475,8 +478,8 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handlePolicySelect(policy.id)}
                           className={`p-4 rounded-xl border flex flex-col justify-between gap-3 transition-all duration-300 cursor-pointer ${isSelected
-                              ? 'border-[#2B7FFF] bg-blue-50/20 shadow-[0_0_15px_rgba(43,127,255,0.1)]'
-                              : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
+                            ? 'border-[#2B7FFF] bg-blue-50/20 shadow-[0_0_15px_rgba(43,127,255,0.1)]'
+                            : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
                             }`}
                         >
                           <div className="flex items-center justify-between">
@@ -572,9 +575,9 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                 <div className="space-y-2.5">
                   {checkListItems.map((item) => (
                     <div key={item.id} className="flex items-center gap-3 text-xs">
-                      
+
                       {item.completed ? (
-                        
+
                         <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 stroke-[3.5]" />
                         </div>
@@ -583,8 +586,8 @@ const Page4 = ({ ActivePage, setActivePage, progress, setProgress, formData, han
                       )}
                       <span
                         className={`font-semibold transition-colors ${item.completed
-                            ? 'text-slate-400 line-through decoration-slate-300'
-                            : 'text-slate-600'
+                          ? 'text-slate-400 line-through decoration-slate-300'
+                          : 'text-slate-600'
                           }`}
                       >
                         {item.label}

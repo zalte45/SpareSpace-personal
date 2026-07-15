@@ -356,78 +356,7 @@ const Profile = () => {
             </motion.div>
 
             {/* Password Update Form */}
-            <motion.div 
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]"
-            >
-              <div className="mb-5 border-b border-slate-50 pb-4">
-                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Lock className="w-4.5 h-4.5 text-[#2B7FFF]" />
-                  <span>Update Password</span>
-                </h4>
-                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Keep your account safe.</p>
-              </div>
-
-              <form onSubmit={handleUpdatePassword} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Current Password</label>
-                    <div className="relative">
-                      <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="password"
-                        required
-                        placeholder="••••••••"
-                        value={passwords.current}
-                        onChange={(e) => setPasswords({...passwords, current: e.target.value})}
-                        className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">New Password</label>
-                    <div className="relative">
-                      <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="password"
-                        required
-                        placeholder="••••••••"
-                        value={passwords.new}
-                        onChange={(e) => setPasswords({...passwords, new: e.target.value})}
-                        className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Confirm New Password</label>
-                    <div className="relative">
-                      <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="password"
-                        required
-                        placeholder="••••••••"
-                        value={passwords.confirm}
-                        onChange={(e) => setPasswords({...passwords, confirm: e.target.value})}
-                        className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-3 border-t border-slate-50 flex justify-end">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#2B7FFF] hover:bg-[#1A6EEF] text-white text-xs font-bold shadow-md shadow-blue-500/10 transition cursor-pointer"
-                  >
-                    Update Password
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
+           
 
             {/* Security Toggles, Active Devices & Archives */}
             <motion.div 
