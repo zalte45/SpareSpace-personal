@@ -15,13 +15,13 @@ import { setLogin } from '../../redux/features/Login/loginSlice';
 
 
 const Home = () => {
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [ActivePage, setActivePage] = useState("DashBoard");
     useEffect(() => {
         async function getMe() {
             try {
-                
+
                 let res = await fetch("http://localhost:3000/api/getMe", {
                     credentials: "include"
                 });
