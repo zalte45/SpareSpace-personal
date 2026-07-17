@@ -205,7 +205,7 @@ const Signup = (props) => {
             <div className='flex flex-row items-center justify-evenly gap-0.5 text-[#71717B] '>
               <span>Already have one ! <span className='text-sky-400 hover:text-sky-300 cursor-pointer' onClick={() => {
                 props.setIsClicked(false)
-                console.log(props.IsClicked)
+                
               }}>Sign In</span></span>
             </div>
           </div>

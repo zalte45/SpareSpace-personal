@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Lock, 
-  Bell, 
-  Shield, 
-  Laptop, 
-  Smartphone, 
-  Download, 
-  Trash2, 
-  Check, 
-  AlertCircle, 
-  Camera, 
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Bell,
+  Shield,
+  Laptop,
+  Smartphone,
+  Download,
+  Trash2,
+  Check,
+  AlertCircle,
+  Camera,
   Key,
   Globe,
   X
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const Profile = () => {
-  const [toasts, setToasts] = useState([]);
-  
   // Account Form states
+  const loginData = useSelector((state) => state.loginInfo)
+
   const [personalInfo, setPersonalInfo] = useState({
-    fullName: "John Doe",
-    email: "john.doe@example.com",
+    fullName: loginData.username,
+    email: loginData.email,
     phone: "+1 (206) 555-0142",
     role: "Host",
     memberSince: "July 2025"
@@ -49,13 +51,24 @@ const Profile = () => {
   // Delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Helper to trigger custom toasts
+  // Helper to trigger custom toasts using react-toastify
   const triggerToast = (message, type = 'success') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 3500);
+    const options = {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    };
+    if (type === 'success') {
+      toast.success(message, options);
+    } else {
+      toast.error(message, options);
+    }
   };
 
   // Submit handlers
@@ -86,20 +99,18 @@ const Profile = () => {
 
   // Toggle switch helper
   const toggleSwitch = (key) => {
-    setNotifications(prev => {
-      const newVal = !prev[key];
-      triggerToast(
-        `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} ${newVal ? 'Enabled' : 'Disabled'}`,
-        'success'
-      );
-      return { ...prev, [key]: newVal };
-    });
+    const newVal = !notifications[key];
+    setNotifications(prev => ({ ...prev, [key]: newVal }));
+    triggerToast(
+      `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} ${newVal ? 'Enabled' : 'Disabled'}`,
+      'success'
+    );
   };
 
   // Animations configuration
   const pageVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { duration: 0.5 }
     }
@@ -115,10 +126,10 @@ const Profile = () => {
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 100, damping: 15 } 
+      transition: { type: "spring", stiffness: 100, damping: 15 }
     }
   };
 
@@ -130,36 +141,23 @@ const Profile = () => {
       className="h-full overflow-y-auto bg-[#FBFDFE] text-slate-800 font-sans selection:bg-[#2B7FFF]/10 selection:text-[#2B7FFF]"
     >
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 relative">
-        
-        {/* Floating Custom Toast Messages */}
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
-          <AnimatePresence>
-            {toasts.map(toast => (
-              <motion.div
-                key={toast.id}
-                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className="pointer-events-auto bg-slate-900 border border-slate-800 text-white px-4.5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs md:text-sm font-semibold max-w-sm"
-              >
-                {toast.type === 'success' ? (
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                ) : (
-                  <div className="w-5 h-5 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                  </div>
-                )}
-                <span>{toast.message}</span>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
 
         {/* HEADER */}
-        <motion.header 
+        <motion.header
           initial={{ y: -25, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, damping: 15 }}
@@ -171,12 +169,12 @@ const Profile = () => {
 
         {/* GRID WORKSPACE */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          
+
           {/* LEFT SECTION (Profile Card & Stats) */}
           <div className="space-y-6">
-            
+
             {/* Profile Card */}
-            <motion.div 
+            <motion.div
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -184,24 +182,23 @@ const Profile = () => {
             >
               {/* Background accent ring */}
               <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-blue-50/40 -z-10" />
-              
+
               {/* Avatar with Glow hover */}
               <div className="relative w-24 h-24 mx-auto group">
-                <motion.div 
+                <motion.div
                   whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(43, 127, 255, 0.4)" }}
-                  className="w-full h-full rounded-full bg-gradient-to-tr from-[#2B7FFF] to-purple-500 p-1 cursor-pointer transition shadow-lg flex items-center justify-center"
+                  className="w-full h-full rounded-full bg-linear-to-tr from-[#2B7FFF] to-purple-500 p-1 cursor-pointer transition shadow-lg flex items-center justify-center"
                 >
                   <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-black text-2xl text-[#2B7FFF] border-2 border-white shadow-inner">
-                    JD
+                    DP
                   </div>
                 </motion.div>
-                
+
                 {/* Upload camera button */}
                 <button className="absolute bottom-0 right-0 p-2 bg-slate-900 border-2 border-white text-white rounded-full hover:bg-slate-800 transition cursor-pointer shadow-md">
                   <Camera className="w-3.5 h-3.5" />
                 </button>
               </div>
-
               <div className="mt-4.5 space-y-1">
                 <h3 className="text-base font-extrabold text-slate-900">{personalInfo.fullName}</h3>
                 <p className="text-xs text-[#2B7FFF] font-bold uppercase tracking-wider">{personalInfo.role}</p>
@@ -211,8 +208,10 @@ const Profile = () => {
               <div className="grid grid-cols-2 gap-4 mt-6 pt-5 border-t border-slate-50 text-xs font-semibold text-slate-500">
                 <div className="border-r border-slate-50">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">ID Verification</span>
-                  <span className="text-emerald-500 font-extrabold flex items-center justify-center gap-1 mt-1">
-                    <Check className="w-4 h-4 stroke-[2.5]" /> Verified
+                  <span className={`${loginData.Verified == true ? "text-emerald-500" : "text-red-500"}  font-extrabold flex items-center justify-center gap-1 mt-1`}>
+                    {loginData.Verified == true ? (<>
+                      <Check className="w-4 h-4 stroke-[2.5]" /> Verified
+                    </>) : ("Not verify")}
                   </span>
                 </div>
                 <div>
@@ -223,7 +222,7 @@ const Profile = () => {
             </motion.div>
 
             {/* Notification settings panel */}
-            <motion.div 
+            <motion.div
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -249,16 +248,15 @@ const Profile = () => {
                       <span className="text-xs font-bold text-slate-800">{item.label}</span>
                       <p className="text-[9px] text-slate-400 font-semibold">{item.desc}</p>
                     </div>
-                    
+
                     {/* Sliding Switch Box */}
-                    <div 
+                    <div
                       onClick={() => toggleSwitch(item.key)}
-                      className={`w-10 h-5.5 rounded-full p-0.5 cursor-pointer flex items-center transition-colors duration-200 ${
-                        notifications[item.key] ? 'bg-[#2B7FFF]' : 'bg-slate-200'
-                      }`}
+                      className={`w-10 h-5.5 rounded-full p-0.5 cursor-pointer flex items-center transition-colors duration-200 ${notifications[item.key] ? 'bg-[#2B7FFF]' : 'bg-slate-200'
+                        }`}
                     >
-                      <motion.div 
-                        layout 
+                      <motion.div
+                        layout
                         className="w-4.5 h-4.5 rounded-full bg-white shadow-md"
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                       />
@@ -271,9 +269,9 @@ const Profile = () => {
 
           {/* CENTER & RIGHT SECTION (Forms, Security & Devices) */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Personal & Contact Information form */}
-            <motion.div 
+            <motion.div
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -289,19 +287,7 @@ const Profile = () => {
 
               <form onSubmit={handleSavePersonalInfo} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Full Name</label>
-                    <div className="relative">
-                      <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        required
-                        value={personalInfo.fullName}
-                        onChange={(e) => setPersonalInfo({...personalInfo, fullName: e.target.value})}
-                        className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
-                      />
-                    </div>
-                  </div>
+
                   <div>
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Email Address</label>
                     <div className="relative">
@@ -310,7 +296,7 @@ const Profile = () => {
                         type="email"
                         required
                         value={personalInfo.email}
-                        onChange={(e) => setPersonalInfo({...personalInfo, email: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
                         className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
                       />
                     </div>
@@ -326,7 +312,7 @@ const Profile = () => {
                         type="text"
                         required
                         value={personalInfo.phone}
-                        onChange={(e) => setPersonalInfo({...personalInfo, phone: e.target.value})}
+                        onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
                         className="w-full pl-9.5 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all text-slate-800 font-semibold"
                       />
                     </div>
@@ -356,10 +342,10 @@ const Profile = () => {
             </motion.div>
 
             {/* Password Update Form */}
-           
+
 
             {/* Security Toggles, Active Devices & Archives */}
-            <motion.div 
+            <motion.div
               variants={cardVariants}
               initial="hidden"
               animate="visible"
@@ -374,18 +360,17 @@ const Profile = () => {
                   </h4>
                   <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Manage access keys and device logins.</p>
                 </div>
-                
+
                 {/* 2FA switch */}
                 <div className="flex items-center gap-3 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-100">
                   <span className="text-[10px] font-bold text-slate-600">Two-Factor Auth</span>
-                  <div 
+                  <div
                     onClick={() => toggleSwitch('twoFactor')}
-                    className={`w-9 h-5 rounded-full p-0.5 cursor-pointer flex items-center transition-colors duration-200 ${
-                      notifications.twoFactor ? 'bg-emerald-500' : 'bg-slate-200'
-                    }`}
+                    className={`w-9 h-5 rounded-full p-0.5 cursor-pointer flex items-center transition-colors duration-200 ${notifications.twoFactor ? 'bg-emerald-500' : 'bg-slate-200'
+                      }`}
                   >
-                    <motion.div 
-                      layout 
+                    <motion.div
+                      layout
                       className="w-4 h-4 rounded-full bg-white shadow-sm"
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
@@ -396,7 +381,7 @@ const Profile = () => {
               {/* Active Device log list */}
               <div className="space-y-4">
                 <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Device Sessions</h5>
-                
+
                 <div className="space-y-3">
                   {/* Session 1 */}
                   <div className="flex items-center justify-between border-b border-slate-50 pb-3">

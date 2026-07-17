@@ -15,9 +15,7 @@ import {
 
 const Page1 = ({ setActivePage, ActivePage, progress, setProgress,formData,handleChangeForm,checkListItems,setCheckListItems,handleSaveDraft }) => {
 
-  useEffect(() => {
-    console.log(progress)
-  }, [])
+ 
   
 
 

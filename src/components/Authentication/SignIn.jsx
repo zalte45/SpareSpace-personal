@@ -3,19 +3,13 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { ThreeDot } from 'react-loading-indicators';
+import { useSelector, useDispatch } from 'react-redux';
+import {setLogin} from '../../redux/features/Login/loginSlice'
 
-// export default function App() {
-//   const notify = () => toast('Wow so easy !');
-
-//   return (
-//     <div className="grid place-items-center h-dvh bg-zinc-900/15">
-//       <Button onClick={notify}>Notify !</Button>
-//       <ToastContainer />
-//     </div>
-//   );
-// }
 
 const SignIn = (props) => {
+  const loginData = useSelector((state) => state.loginInfo)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [signIn, setSignIn] = useState({
@@ -62,18 +56,19 @@ const SignIn = (props) => {
       let res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+         "Content-Type": "application/json" 
         },
         body: JSON.stringify({
           email: signIn.email,
           password: signIn.password,
         }),
-        credentials: "include"
+        credentials: "include"  
       })
       let data = await res.json()
       console.log(data)
 
       if (res.ok) {
+        dispatch(setLogin(data.user))
         toast.success('Login Successful !', {
           position: "top-right",
           autoClose: 5000,

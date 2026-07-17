@@ -446,14 +446,7 @@ const Page5 = ({ ActivePage, setActivePage, progress, setProgress, formData, set
                   Save as Draft
                 </motion.button>
 
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-5 py-3 text-sm font-semibold text-[#2B7FFF] bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-100 transition-colors cursor-pointer"
-                >
-                  Preview Listing
-                </motion.button>
+               
 
                 <motion.button
                   type="button"

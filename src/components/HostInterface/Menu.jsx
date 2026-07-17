@@ -53,7 +53,7 @@ const Menu = (props) => {
                         layout
                         whileHover={{ scale: 1.02 }}
 
-                        onClick={() => { props.setActivePage("DashBoard"); setActiveIndex(0); console.log(props.ActivePage) }}
+                        onClick={() => { props.setActivePage("DashBoard"); setActiveIndex(0); }}
                         onMouseEnter={() => setHoveredIndex(0)}
                         onMouseLeave={() => setHoveredIndex(null)}
                         className={`menu-item hostBtn-1 flex flex-row gap-2 p-2 cursor-pointer rounded-xl items-center relative isolate ${props.isCollapsed ? 'justify-center' : ''}`}

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Menu from './Menu';
 import DashBoard from './DashBoard';
@@ -9,14 +9,35 @@ import Message from './Message';
 import Analytics from './Analytics';
 import MySpace from './MySpace'
 import ListSpace from './ListSpace'
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../redux/features/Login/loginSlice';
+
 
 
 const Home = () => {
+    const dispatch=useDispatch()
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [ActivePage, setActivePage] = useState("DashBoard");
-    
-    
-    
+    useEffect(() => {
+        async function getMe() {
+            try {
+                
+                let res = await fetch("http://localhost:3000/api/getMe", {
+                    credentials: "include"
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    dispatch(setLogin(data.user));
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        getMe()
+    }, [])
+
+
+
     return (
         <>
             <div className='flex flex-row w-full min-h-screen bg-gray-50'>

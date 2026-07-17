@@ -544,7 +544,7 @@ const MySpace = () => {
                           alt={space.title} 
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
                         
                         {/* Status Badge */}
                         <motion.div 
@@ -701,7 +701,7 @@ const MySpace = () => {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.94, opacity: 0, y: 15 }}
                 transition={{ type: "spring", stiffness: 380, damping: 26 }}
-                className="relative bg-white rounded-[24px] shadow-2xl p-6 w-full max-w-md border border-slate-100 z-10"
+                className="relative bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md border border-slate-100 z-10"
               >
                 <button
                   onClick={() => setIsAddModalOpen(false)}
@@ -844,7 +844,7 @@ const MySpace = () => {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.94, opacity: 0, y: 15 }}
                 transition={{ type: "spring", stiffness: 380, damping: 26 }}
-                className="relative bg-white rounded-[24px] shadow-2xl p-6 w-full max-w-md border border-slate-100 z-10"
+                className="relative bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md border border-slate-100 z-10"
               >
                 <button
                   onClick={() => setIsEditModalOpen(false)}

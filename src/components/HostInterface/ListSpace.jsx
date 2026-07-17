@@ -14,7 +14,6 @@ const ListSpace = () => {
   const [ActivePage, setActivePage] = useState(1)
   const [progress, setProgress] = useState(100)
   useEffect(() => {
-    console.log(progress)
     console.log(formData)
   }, []);
 
@@ -96,9 +95,9 @@ const ListSpace = () => {
       (availabilityCompleted ? 20 : 0) +
       (reviewCompleted ? 20 : 0);
 
-    
+
     setProgress(newProgress);
-    console.log(newProgress)
+
 
 
 
@@ -124,11 +123,78 @@ const ListSpace = () => {
     alert("Draft saved to localStorage!");
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     localStorage.removeItem("space_listing_draft");
     dispatch(resetForm());
     alert("Listing published successfully!");
     setActivePage(1);
+    const newFormData = new FormData();
+
+    // Images
+    formData.images.forEach((img) => {
+      newFormData.append("images", img.file);
+    });
+
+    // Basic Info
+    newFormData.append("title", formData.title);
+    newFormData.append("description", formData.description);
+    newFormData.append("category", formData.category);
+
+    // Location
+    newFormData.append("street", formData.street);
+    newFormData.append("city", formData.city);
+    newFormData.append("state", formData.state);
+    newFormData.append("pincode", formData.pincode);
+
+    // Availability
+    newFormData.append("availableImmediately", formData.availableImmediately);
+    newFormData.append("availableFrom", formData.availableFrom);
+    newFormData.append("availableUntil", formData.availableUntil);
+
+    // Rental
+    newFormData.append("minDuration", formData.minDuration);
+    newFormData.append("maxDuration", formData.maxDuration);
+    newFormData.append("price", formData.price);
+    newFormData.append("securityDeposit", formData.securityDeposit);
+    newFormData.append("lateFee", formData.lateFee);
+
+    // Policies
+    newFormData.append("cancellationPolicy", formData.cancellationPolicy);
+    newFormData.append("bookingPrefs", JSON.stringify(formData.bookingPrefs));
+
+    // Space Details
+    newFormData.append("area", formData.area);
+    newFormData.append("unit", formData.unit);
+    newFormData.append("accessHours", formData.accessHours);
+    newFormData.append("rules", formData.rules);
+
+    // Amenities
+    newFormData.append("amenities", JSON.stringify(formData.amenities));
+    try {
+      let res = await fetch("http://localhost:3000/api/listing", {
+        method: "POST",
+        credentials: "include",
+        body: newFormData
+      })
+      if (res.status === 401) {
+        let refreshRes = await fetch("http://localhost:3000/api/refreshToken", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include"
+        })
+        let res = await fetch("http://localhost:3000/api/listing", {
+          method: "POST",
+          credentials: "include",
+          body: newFormData
+        })
+        let refreshResData = await refreshRes.json()
+        console.log(refreshResData)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeleteImage = (id) => {

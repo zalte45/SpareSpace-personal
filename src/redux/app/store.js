@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import formReducer from "../redux/features/Form/formSlice";
+import formReducer from "../features/Form/formSlice";
+import loginReducer from "../features/Login/loginSlice";
 
 export const store = configureStore({
   reducer: {
     form: formReducer,
+    loginInfo:loginReducer
   },
   middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware({
