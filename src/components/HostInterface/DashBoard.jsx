@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Users, 
-  Clock, 
-  Building, 
-  Plus, 
-  Calendar, 
-  ChevronRight, 
-  Check, 
-  X, 
-  Star, 
-  MapPin, 
-  ArrowUpRight, 
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
+  Clock,
+  Building,
+  Plus,
+  Calendar,
+  ChevronRight,
+  Check,
+  X,
+  Star,
+  MapPin,
+  ArrowUpRight,
   ArrowDownRight,
-  Bell, 
+  Bell,
   Search,
   Activity,
   AlertCircle
 } from 'lucide-react';
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  BarChart, 
-  Bar, 
-  Cell 
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  BarChart,
+  Bar,
+  Cell
 } from 'recharts';
 
 // Animated Counter Component using requestAnimationFrame for smooth numeric transitions
@@ -45,13 +45,13 @@ const AnimatedCounter = ({ value, duration = 1000, prefix = "", suffix = "", dec
       return;
     }
     if (end === 0) return;
-    
+
     const startTime = performance.now();
 
     const updateCount = (currentTime) => {
       const elapsedTime = currentTime - startTime;
       const progress = Math.min(elapsedTime / duration, 1);
-      
+
       // Easing out quadratic
       const easeProgress = progress * (2 - progress);
       const currentCount = start + easeProgress * (end - start);
@@ -66,6 +66,8 @@ const AnimatedCounter = ({ value, duration = 1000, prefix = "", suffix = "", dec
 
     requestAnimationFrame(updateCount);
   }, [value, duration]);
+ 
+
 
   const formatted = count.toLocaleString(undefined, {
     minimumFractionDigits: decimalPlaces,
@@ -82,8 +84,8 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="bg-white border border-slate-100 p-3 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
         <p className="text-sm font-bold text-[#2B7FFF]">
-          {payload[0].name === 'revenue' 
-            ? `$${payload[0].value.toLocaleString()}` 
+          {payload[0].name === 'revenue'
+            ? `$${payload[0].value.toLocaleString()}`
             : `${payload[0].value} bookings`}
         </p>
       </div>
@@ -92,14 +94,14 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const DashBoard = ({ActivePage,setActivePage }) => {
+const DashBoard = ({ ActivePage, setActivePage }) => {
   // Page states
   const [activeSpacesCount, setActiveSpacesCount] = useState(8);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [chartFilter, setChartFilter] = useState('6M');
   const [toasts, setToasts] = useState([]);
-  
+
   // New Space Form State
   const [newSpace, setNewSpace] = useState({
     title: '',
@@ -185,7 +187,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
   // Action triggered when approving/declining a request
   const handleRequestAction = (id, renterName, actionType) => {
     setPendingRequests(prev => prev.filter(r => r.id !== id));
-    
+
     // Add to activity timeline
     const newAct = {
       id: Date.now(),
@@ -199,7 +201,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
     // Show custom toast notification
     triggerToast(
-      actionType === 'approve' 
+      actionType === 'approve'
         ? `Approved booking request from ${renterName}`
         : `Declined booking request from ${renterName}`,
       actionType === 'approve' ? 'success' : 'info'
@@ -216,13 +218,13 @@ const DashBoard = ({ActivePage,setActivePage }) => {
   };
 
   // Filter lists based on Search input query
-  const filteredTransactions = transactions.filter(tx => 
+  const filteredTransactions = transactions.filter(tx =>
     tx.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     tx.space.toLowerCase().includes(searchQuery.toLowerCase()) ||
     tx.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredActivities = activities.filter(act => 
+  const filteredActivities = activities.filter(act =>
     act.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     act.desc.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -230,7 +232,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
   // Framer Motion Animation Variants
   const pageVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { duration: 0.6, ease: "easeOut" }
     }
@@ -238,10 +240,10 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
   const headerVariants = {
     hidden: { y: -30, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1, 
-      transition: { type: "spring", stiffness: 120, damping: 15 } 
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 120, damping: 15 }
     }
   };
 
@@ -257,10 +259,10 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
   const cardVariants = {
     hidden: { opacity: 0, y: 25 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 110, damping: 16 } 
+      transition: { type: "spring", stiffness: 110, damping: 16 }
     }
   };
 
@@ -272,7 +274,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
       className="h-full overflow-y-auto bg-[#FBFDFE] text-slate-800 font-sans selection:bg-[#2B7FFF]/10 selection:text-[#2B7FFF]"
     >
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        
+
         {/* Floating Custom Toast Messages */}
         <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
           <AnimatePresence>
@@ -301,7 +303,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
         </div>
 
         {/* 1. HEADER SECTION */}
-        <motion.header 
+        <motion.header
           variants={headerVariants}
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-6"
         >
@@ -311,7 +313,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
               Welcome back! Here's an overview of your storage business.
             </p>
           </div>
-          
+
           <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
             {/* Search Input */}
             <div className="relative">
@@ -324,7 +326,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                 className="pl-9 pr-4 py-2 w-48 md:w-60 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2B7FFF] focus:border-transparent transition-all"
               />
               {searchQuery && (
-                <button 
+                <button
                   onClick={() => setSearchQuery('')}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
@@ -359,14 +361,14 @@ const DashBoard = ({ActivePage,setActivePage }) => {
         </motion.header>
 
         {/* 2. STATISTICS CARDS SECTION */}
-        <motion.div 
+        <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5"
         >
           {/* Card 1: Total Earnings */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             whileHover={{ y: -6, boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.04)" }}
             className="bg-white border border-slate-100 rounded-[20px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all flex flex-col justify-between"
@@ -389,13 +391,13 @@ const DashBoard = ({ActivePage,setActivePage }) => {
             <div className="h-8.75 mt-4 overflow-hidden -mx-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={[
-                  { v: 1000 }, { v: 1400 }, { v: 1200 }, { v: 1900 }, 
+                  { v: 1000 }, { v: 1400 }, { v: 1200 }, { v: 1900 },
                   { v: 2400 }, { v: 2200 }, { v: 2800 }, { v: 3400 }, { v: 3820 }
                 ]} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="spark1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2B7FFF" stopOpacity={0.25}/>
-                      <stop offset="95%" stopColor="#2B7FFF" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#2B7FFF" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#2B7FFF" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <Area type="monotone" dataKey="v" stroke="#2B7FFF" strokeWidth={1.8} fillOpacity={1} fill="url(#spark1)" isAnimationActive={true} />
@@ -405,7 +407,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Card 2: Active Spaces */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             whileHover={{ y: -6, boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.04)" }}
             className="bg-white border border-slate-100 rounded-[20px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all flex flex-col justify-between"
@@ -432,7 +434,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Card 3: Occupancy */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             whileHover={{ y: -6, boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.04)" }}
             className="bg-white border border-slate-100 rounded-[20px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all flex flex-col justify-between"
@@ -463,7 +465,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Card 4: Monthly Revenue */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             whileHover={{ y: -6, boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.04)" }}
             className="bg-white border border-slate-100 rounded-[20px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all flex flex-col justify-between"
@@ -486,13 +488,13 @@ const DashBoard = ({ActivePage,setActivePage }) => {
             <div className="h-8.75 mt-4 overflow-hidden -mx-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={[
-                  { v: 1200 }, { v: 1100 }, { v: 1500 }, { v: 1800 }, 
+                  { v: 1200 }, { v: 1100 }, { v: 1500 }, { v: 1800 },
                   { v: 2200 }, { v: 2900 }, { v: 3400 }, { v: 3200 }, { v: 3820 }
                 ]} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="spark2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#E11D48" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#E11D48" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#E11D48" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#E11D48" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <Area type="monotone" dataKey="v" stroke="#E11D48" strokeWidth={1.8} fillOpacity={1} fill="url(#spark2)" isAnimationActive={true} />
@@ -502,7 +504,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Card 5: Pending Requests */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             whileHover={{ y: -6, boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.04)" }}
             className="bg-white border border-slate-100 rounded-[20px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all flex flex-col justify-between"
@@ -532,9 +534,8 @@ const DashBoard = ({ActivePage,setActivePage }) => {
               </p>
             </div>
             {/* Visual alert message block */}
-            <div className={`mt-5 px-3 py-2 rounded-xl text-[10px] font-bold flex items-center justify-between ${
-              pendingRequests.length > 0 ? 'bg-amber-50 text-amber-800' : 'bg-emerald-50 text-emerald-800'
-            }`}>
+            <div className={`mt-5 px-3 py-2 rounded-xl text-[10px] font-bold flex items-center justify-between ${pendingRequests.length > 0 ? 'bg-amber-50 text-amber-800' : 'bg-emerald-50 text-emerald-800'
+              }`}>
               <span>Status</span>
               <span>{pendingRequests.length > 0 ? 'Pending Action' : 'Fully Cleared'}</span>
             </div>
@@ -544,7 +545,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
         {/* 3. CHARTS ROW - Large Revenue Line Chart & Weekly Booking Bar Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Analytics Line Chart (2/3 width) */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="lg:col-span-2 bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]"
           >
@@ -560,11 +561,10 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                   <button
                     key={filter}
                     onClick={() => setChartFilter(filter)}
-                    className={`relative px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 cursor-pointer ${
-                      chartFilter === filter 
-                        ? 'bg-white text-[#2B7FFF] shadow-sm' 
-                        : 'text-slate-500 hover:text-slate-800'
-                    }`}
+                    className={`relative px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 cursor-pointer ${chartFilter === filter
+                      ? 'bg-white text-[#2B7FFF] shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                      }`}
                   >
                     {filter === '30D' ? '30 Days' : filter === '6M' ? '6 Months' : '12 Months'}
                   </button>
@@ -575,43 +575,43 @@ const DashBoard = ({ActivePage,setActivePage }) => {
             {/* Line/Area Chart */}
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart 
+                <AreaChart
                   data={
                     chartFilter === '30D' ? data30Days :
-                    chartFilter === '6M' ? data6Months : data12Months
-                  } 
+                      chartFilter === '6M' ? data6Months : data12Months
+                  }
                   margin={{ top: 10, right: 10, left: -22, bottom: 0 }}
                 >
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2B7FFF" stopOpacity={0.24}/>
-                      <stop offset="95%" stopColor="#2B7FFF" stopOpacity={0.00}/>
+                      <stop offset="5%" stopColor="#2B7FFF" stopOpacity={0.24} />
+                      <stop offset="95%" stopColor="#2B7FFF" stopOpacity={0.00} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis 
-                    dataKey="name" 
-                    tickLine={false} 
-                    axisLine={false} 
+                  <XAxis
+                    dataKey="name"
+                    tickLine={false}
+                    axisLine={false}
                     tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
                     dy={10}
                   />
-                  <YAxis 
-                    tickLine={false} 
-                    axisLine={false} 
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
                     tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
                     dx={-10}
                     tickFormatter={(v) => `$${v}`}
                   />
                   <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#2B7FFF', strokeWidth: 1, strokeDasharray: '3 3' }} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="revenue" 
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
                     name="revenue"
-                    stroke="#2B7FFF" 
-                    strokeWidth={2.5} 
-                    fillOpacity={1} 
-                    fill="url(#colorRevenue)" 
+                    stroke="#2B7FFF"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)"
                     isAnimationActive={true}
                     animationDuration={1100}
                   />
@@ -621,7 +621,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Weekly Booking Bar Chart (1/3 width) */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]"
           >
@@ -634,34 +634,34 @@ const DashBoard = ({ActivePage,setActivePage }) => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyBookingData} margin={{ top: 10, right: 10, left: -22, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis 
-                    dataKey="name" 
-                    tickLine={false} 
-                    axisLine={false} 
+                  <XAxis
+                    dataKey="name"
+                    tickLine={false}
+                    axisLine={false}
                     tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
                     dy={10}
                   />
-                  <YAxis 
-                    tickLine={false} 
-                    axisLine={false} 
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
                     tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
                     dx={-10}
                     allowDecimals={false}
                   />
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(43, 127, 255, 0.03)' }} />
-                  <Bar 
-                    dataKey="bookings" 
+                  <Bar
+                    dataKey="bookings"
                     name="bookings"
-                    fill="#E0ECFF" 
+                    fill="#E0ECFF"
                     radius={[6, 6, 0, 0]}
                     isAnimationActive={true}
                     animationDuration={1100}
                     maxBarSize={28}
                   >
                     {weeklyBookingData.map((entry, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={index === 5 ? '#2B7FFF' : '#E0ECFF'} 
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={index === 5 ? '#2B7FFF' : '#E0ECFF'}
                         className="hover:fill-[#2B7FFF] transition-colors duration-200"
                       />
                     ))}
@@ -674,21 +674,21 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
         {/* 4. DETAILS ROW - Top Performing Space, Pending Requests, Occupancy Progress */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
+
           {/* Top Performing Space */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] flex flex-col justify-between"
           >
             <div>
               <h2 className="text-base font-bold text-slate-900 mb-1">Top Performing Space</h2>
               <p className="text-xs font-semibold text-slate-400 mb-4">Highest revenue space in your catalog.</p>
-              
+
               <div className="space-y-4">
                 <div className="relative rounded-2xl overflow-hidden h-40 group cursor-pointer">
-                  <img 
-                    src="/garage.jpg" 
-                    alt="Top performing garage storage space" 
+                  <img
+                    src="/garage.jpg"
+                    alt="Top performing garage storage space"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
@@ -706,7 +706,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="text-base font-bold text-slate-900">Climate-Controlled Garage Storage</h4>
                   <p className="text-xs text-slate-500 flex items-center gap-1 mt-1 font-medium">
@@ -731,7 +731,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
               </div>
             </div>
 
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02, x: 2 }}
               whileTap={{ scale: 0.98 }}
               className="w-full mt-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition cursor-pointer"
@@ -742,7 +742,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Pending Requests Card */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] flex flex-col justify-between"
           >
@@ -806,7 +806,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                       </motion.div>
                     ))
                   ) : (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className="py-12 flex flex-col items-center justify-center text-center space-y-2"
@@ -829,14 +829,14 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Occupancy Breakdown Progress */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] flex flex-col justify-between"
           >
             <div>
               <h2 className="text-base font-bold text-slate-900 mb-1">Occupancy Breakdown</h2>
               <p className="text-xs font-semibold text-slate-400 mb-2">Detailed storage volume distribution.</p>
-              
+
               <div className="flex flex-col items-center justify-center py-2">
                 {/* SVG Progress Ring */}
                 <div className="relative flex items-center justify-center">
@@ -872,7 +872,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                     <span className="text-[9px] uppercase tracking-wider text-slate-400 font-extrabold">Occupied</span>
                   </div>
                 </div>
-                
+
                 <div className="w-full mt-5 space-y-2.5">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
                     <div className="flex items-center gap-2">
@@ -888,7 +888,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                     </div>
                     <span className="font-bold text-slate-950">187.5 sq ft</span>
                   </div>
-                  
+
                   <div className="border-t border-slate-100 pt-3 flex items-center justify-between text-xs text-slate-500 font-bold">
                     <span>Total Managed Capacity</span>
                     <span className="text-slate-950 font-extrabold">1,250 sq ft</span>
@@ -897,7 +897,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
               </div>
             </div>
 
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full mt-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition cursor-pointer border border-slate-200/50"
@@ -910,9 +910,9 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
         {/* 5. RECENT TRANSACTIONS TABLE & RECENT ACTIVITY TIMELINE */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
+
           {/* Recent Transactions Table (2/3 width) */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="lg:col-span-2 bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]"
           >
@@ -957,11 +957,10 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                         <td className="py-3.5 text-slate-500 font-medium">{tx.date}</td>
                         <td className="py-3.5 text-slate-800 font-bold">{tx.amount}</td>
                         <td className="py-3.5 text-right pr-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            tx.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' :
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${tx.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' :
                             tx.status === 'Pending' ? 'bg-amber-50 text-amber-600' :
-                            'bg-slate-100 text-slate-600'
-                          }`}>
+                              'bg-slate-100 text-slate-600'
+                            }`}>
                             {tx.status}
                           </span>
                         </td>
@@ -982,7 +981,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
           </motion.div>
 
           {/* Recent Activity Timeline (1/3 width) */}
-          <motion.div 
+          <motion.div
             variants={cardVariants}
             className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]"
           >
@@ -1005,7 +1004,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
                     >
                       {/* Circle indicator */}
                       <span className={`absolute left-[-23.5px] top-1.5 w-3.5 h-3.5 rounded-full border-[3px] border-white shadow-sm ${act.color}`} />
-                      
+
                       <div className="space-y-0.5">
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-bold text-slate-800">{act.title}</p>
@@ -1031,7 +1030,7 @@ const DashBoard = ({ActivePage,setActivePage }) => {
 
       </div>
 
-     
+
 
     </motion.div>
   );

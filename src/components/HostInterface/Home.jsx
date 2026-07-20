@@ -9,32 +9,46 @@ import Message from './Message';
 import Analytics from './Analytics';
 import MySpace from './MySpace'
 import ListSpace from './ListSpace'
-import { useDispatch } from 'react-redux';
-import { setLogin } from '../../redux/features/Login/loginSlice';
+
 
 
 
 const Home = () => {
-    const dispatch = useDispatch()
+    
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [ActivePage, setActivePage] = useState("DashBoard");
-    useEffect(() => {
-        async function getMe() {
-            try {
+    // useEffect(() => {
+    //     async function getMe() {
+    //         try {
+    //             let res = await fetch("http://localhost:3000/api/getMe", {
+    //                 credentials: "include"
+    //             });
+                
+    //         } catch (error) {
+    //             console.error(error)
+    //         }
+    //     }
+    //     getMe()
 
-                let res = await fetch("http://localhost:3000/api/getMe", {
-                    credentials: "include"
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    dispatch(setLogin(data.user));
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        getMe()
-    }, [])
+    // }, [])
+    // useEffect(() => {
+    //     console.log("Home runs")
+    //     async function refreshToken() {
+    //         try {
+    //             let res = await fetch("http://localhost:3000/api/refreshToken", {
+    //                 method: "POST",
+    //                 credentials: "include"
+    //             });
+    //             if (!res.ok) {
+    //                 const data = await res.json();
+    //                 console.log(data)
+    //             }
+    //         } catch (error) {
+    //             console.error(error)
+    //         }
+    //     }
+    //     refreshToken()
+    // }, [])
 
 
 
@@ -61,7 +75,7 @@ const Home = () => {
                     {ActivePage === "Message" && <Message />}
                     {ActivePage === "Analytics" && <Analytics />}
                     {ActivePage === "ListSpace" && <ListSpace />}
-                    {ActivePage === "MySpace" && <MySpace />}
+                    {ActivePage === "MySpace" && <MySpace ActivePage={ActivePage} setActivePage={setActivePage} />}
                 </div>
             </div>
         </>
