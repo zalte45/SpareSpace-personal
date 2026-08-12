@@ -8,21 +8,25 @@ import {
 
 import { Audio } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { setLogin } from "./redux/features/Login/loginSlice";
+import { setIsLoggedIn } from "./redux/features/User/user";
 import Dashboard from "./components/Landing-Page/Dashboard";
 import Home from "./components/Authentication/Home";
 import Forgot from "./components/Authentication/Forgot";
 import Verify from "./components/Authentication/Verify";
-import DashBoard from "./components/HostInterface/Home";
+import DashBoard_Host from "./components/HostInterface/Home";
 import NotFound from "./components/NotFound";
 
 function App() {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+  
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     async function getMe() {
       try {
         let res = await fetch("http://localhost:3000/api/getMe", {
@@ -54,25 +58,24 @@ function App() {
           console.log(data);
 
           dispatch(setLogin(data.user));
-          setIsAuthenticated(true);
+          dispatch(setIsLoggedIn(true));
         } else {
-          setIsAuthenticated(false);
+          dispatch(setIsLoggedIn(false));
         }
+
       } catch (error) {
         console.error(error);
-        setIsAuthenticated(false);
+        dispatch(setIsLoggedIn(false));
       } finally {
         setLoading(false);
       }
     }
-
     getMe();
-  }, [dispatch]);
+  }, [dispatch, isLoggedIn]);
 
   function ProtectedRoute({ children }) {
     if (loading) return null;
-
-    return isAuthenticated ? children : <Navigate to="/SignIn-Up" replace />;
+    return isLoggedIn ? children : <Navigate to="/SignIn-Up" replace />;
   }
 
   if (loading) {
@@ -94,18 +97,20 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-
         <Route path="/SignIn-Up" element={<Home />} />
-
         <Route path="/Forgot" element={<Forgot />} />
-
-        <Route path="/Verify" element={<Verify />} />
-
+        <Route
+          path="/Verify"
+          element={
+            <ProtectedRoute>
+              <Verify />
+            </ProtectedRoute>
+          } />
         <Route
           path="/DashBoard"
           element={
             <ProtectedRoute>
-              <DashBoard />
+              <DashBoard_Host />
             </ProtectedRoute>
           }
         />

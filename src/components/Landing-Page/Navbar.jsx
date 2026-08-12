@@ -1,10 +1,44 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import CardNav from './CardNav';
 import { gsap } from 'gsap';
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setIsLoggedIn } from '../../redux/features/User/user';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 const Navbar = () => {
+    const dispatch = useDispatch()
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+    const navigate = useNavigate()
     const navbarRef = useRef(null);
+    const handleUser = async () => {
+        try {
+            let res = await fetch("http://localhost:3000/api/refreshToken", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+
+            let data = await res.json()
+            console.log(data)
+            if (res.ok) {
+                console.log(isLoggedIn)
+                dispatch(setIsLoggedIn(true))
+                navigate("/DashBoard")
+            }
+            if (!res.ok) {
+
+                navigate("/SignIn-Up")
+            }
+        } catch (error) {
+            console.error(error);   
+        }
+
+    }
 
     useLayoutEffect(() => {
         // Create GSAP context for proper scoping and cleanup on unmount
@@ -55,7 +89,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav 
+            <nav
                 ref={navbarRef}
                 className='sticky top-0 z-50 backdrop-blur-3xl h-16 w-full border-b border-[#EAEAED] flex flex-row justify-evenly items-center'
             >
@@ -78,9 +112,11 @@ const Navbar = () => {
                     {/* <button  className='cursor-pointer hover:text-[#2B7FFF] transition-colors duration-200'>
                         Sign In
                         </button> */}
-                        <Link to='/SignIn-Up'>
-                    <button className='cursor-pointer w-30 bg-[#2B7FFF] py-2 rounded-full text-white hover:scale-105 transition-transform'>Get Started</button>
-                        </Link>
+
+                    <button
+                        onClick={() => handleUser()}
+                        className='cursor-pointer w-30 bg-[#2B7FFF] py-2 rounded-full text-white hover:scale-105 transition-transform'>Get Started</button>
+
                 </div>
             </nav>
         </>

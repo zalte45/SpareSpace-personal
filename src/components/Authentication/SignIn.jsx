@@ -6,6 +6,8 @@ import { ThreeDot } from 'react-loading-indicators';
 import { useSelector, useDispatch } from 'react-redux';
 import {setLogin} from '../../redux/features/Login/loginSlice'
 
+import { setIsLoggedIn } from '../../redux/features/User/user';
+
 
 const SignIn = (props) => {
   const loginData = useSelector((state) => state.loginInfo)
@@ -51,8 +53,6 @@ const SignIn = (props) => {
     }
     setIsLoading(true)
     try {
-
-
       let res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
@@ -68,6 +68,7 @@ const SignIn = (props) => {
       console.log(data)
 
       if (res.ok) {
+        dispatch(setIsLoggedIn(true))
         dispatch(setLogin(data.user))
         toast.success('Login Successful !', {
           position: "top-right",
@@ -81,8 +82,9 @@ const SignIn = (props) => {
           transition: Bounce,
         });
         setTimeout(() => {
+          console.log("navigate runs")
           navigate("/DashBoard")
-        }, 1500);
+        }, 1000);
       } else {
         toast.error(data.Message || 'Invalid email or password', {
           position: "top-right",
