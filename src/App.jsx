@@ -9,7 +9,7 @@ import {
 import { Audio } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setLogin } from "./redux/features/Login/loginSlice";
+import { setLogin, clearLogin } from "./redux/features/Login/loginSlice";
 import { setIsLoggedIn } from "./redux/features/User/user";
 import Dashboard from "./components/Landing-Page/Dashboard";
 import Home from "./components/Authentication/Home";
@@ -60,18 +60,20 @@ function App() {
           dispatch(setLogin(data.user));
           dispatch(setIsLoggedIn(true));
         } else {
+          dispatch(clearLogin());
           dispatch(setIsLoggedIn(false));
         }
 
       } catch (error) {
         console.error(error);
+        dispatch(clearLogin());
         dispatch(setIsLoggedIn(false));
       } finally {
         setLoading(false);
       }
     }
     getMe();
-  }, [dispatch, isLoggedIn]);
+  }, [dispatch]);
 
   function ProtectedRoute({ children }) {
     if (loading) return null;

@@ -7,10 +7,10 @@ import { ThreeDot } from 'react-loading-indicators';
 
 const Signup = (props) => {
   const [Role, setRole] = useState("")
-  useEffect(() => {    
+  useEffect(() => {
 
   }, [])
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const [Form, setForm] = useState({
@@ -18,7 +18,7 @@ const Signup = (props) => {
     email: "",
     password: "",
     confirmPassword: "",
-    Role:""
+    Role: ""
   })
   const [state, setState] = useState(0);
 
@@ -95,12 +95,16 @@ const Signup = (props) => {
           username: Form.username,
           email: Form.email,
           password: Form.password,
-          role:Form.Role
+          role: Form.Role
         }),
         credentials: "include"
       })
-      let data = await res.json()
-      await setState(res.status)
+      if (!res.ok) {
+        let data = await res.json()
+        console.log(data)
+        await setState(res.status)
+
+      }
       if (res.ok) {
         localStorage.setItem("verifyToken", data.verifyToken)
         const verifyToken = localStorage.getItem("verifyToken")
@@ -122,7 +126,7 @@ const Signup = (props) => {
       } else {
         toast.error(data.Message || 'Registration failed!', {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: false,
           pauseOnHover: true,
@@ -190,14 +194,14 @@ const Signup = (props) => {
             <div className='flex justify-evenly items-center flex-row gap-2 w-80 pt-4 text-black'>
               <button onClick={() => {
                 setRole("Host")
-                Form.Role="Host"
-                console.log(Form.Role)
-                 }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role==="Host" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Host</button>
+                Form.Role = "Host"
+
+              }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role === "Host" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Host</button>
               <button onClick={() => {
                 setRole("Renter")
-                Form.Role="Renter"
-                console.log(Form.Role)
-                }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role==="Renter" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Renter</button>
+                Form.Role = "Renter"
+
+              }} className={`flex items-center justify-center w-40  px-4 py-2  rounded-sm cursor-pointer ${Role === "Renter" ? "bg-[#2B7FFF] text-white" : "bg-[#F6F6F7]"}   hover:scale-105 transition-transform`}>Renter</button>
             </div>
             <div className=' flex justify-evenly items-center  w-80 pt-4'>
               <button onClick={() => submitForm()} className='flex items-center justify-center w-80 bg-[#2B7FFF] px-4 py-2  rounded-sm cursor-pointer text-white hover:scale-105 transition-transform'>{isLoading ? (<ThreeDot color="#ffff" size="small" text="" textColor="" />) : ("Sign Up")}</button>
@@ -205,7 +209,7 @@ const Signup = (props) => {
             <div className='flex flex-row items-center justify-evenly gap-0.5 text-[#71717B] '>
               <span>Already have one ! <span className='text-sky-400 hover:text-sky-300 cursor-pointer' onClick={() => {
                 props.setIsClicked(false)
-                
+
               }}>Sign In</span></span>
             </div>
           </div>

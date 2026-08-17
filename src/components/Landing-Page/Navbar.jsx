@@ -3,7 +3,8 @@ import CardNav from './CardNav';
 import { gsap } from 'gsap';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setIsLoggedIn } from '../../redux/features/User/user';
+import { setIsLoggedIn, logout } from '../../redux/features/User/user';
+import { clearLogin } from '../../redux/features/Login/loginSlice';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,11 +32,17 @@ const Navbar = () => {
                 navigate("/DashBoard")
             }
             if (!res.ok) {
-
+                dispatch(clearLogin());
+                dispatch(logout());
+                dispatch(setIsLoggedIn(false));
                 navigate("/SignIn-Up")
             }
         } catch (error) {
-            console.error(error);   
+            console.error(error);
+            dispatch(clearLogin());
+            dispatch(logout());
+            dispatch(setIsLoggedIn(false));
+            navigate("/SignIn-Up")
         }
 
     }

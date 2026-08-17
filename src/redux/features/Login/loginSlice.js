@@ -4,7 +4,7 @@ const initialState = {
     id: "",
     username: "",
     email: "",
-    verified:Boolean
+    verified:false
 }
 
 const loginSlice = createSlice({
@@ -17,14 +17,14 @@ const loginSlice = createSlice({
             state.email = action.payload.email;
             state.verified = action.payload.verified;
         },
-
+        clearLogin: () => ({ ...initialState }),
     }
 
 })
 
 
 
-export const { setLogin } = loginSlice.actions
+export const { setLogin, clearLogin } = loginSlice.actions
 
 
 export default loginSlice.reducer;
