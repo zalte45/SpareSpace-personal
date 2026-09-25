@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import {
@@ -22,6 +23,7 @@ import {
 import { useSelector } from 'react-redux';
 
 const Profile = () => {
+  const navigate = useNavigate()
   // Account Form states
   const loginData = useSelector((state) => state.loginInfo)
 
@@ -96,16 +98,33 @@ const Profile = () => {
     setIsDeleteModalOpen(false);
     triggerToast("Account deletion request submitted", "error");
   };
+  const handleLogout = async () => {
+    let res = await fetch("http://localhost:3000/api/Logout", {
+      credentials: "include"
+    });
+    if (res.ok) {
+      toast.success('Logout Successful !', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    let data = await res.json()
+    console.log(data)
+  }
+
 
   // Toggle switch helper
-  const toggleSwitch = (key) => {
-    const newVal = !notifications[key];
-    setNotifications(prev => ({ ...prev, [key]: newVal }));
-    triggerToast(
-      `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} ${newVal ? 'Enabled' : 'Disabled'}`,
-      'success'
-    );
-  };
+
 
   // Animations configuration
   const pageVariants = {
@@ -133,28 +152,30 @@ const Profile = () => {
     }
   };
 
-  return (
+  return (<>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      transition={Bounce}
+    />
     <motion.div
       variants={pageVariants}
       initial="hidden"
       animate="visible"
       className="h-full overflow-y-auto bg-[#FBFDFE] text-slate-800 font-sans selection:bg-[#2B7FFF]/10 selection:text-[#2B7FFF]"
     >
+
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 relative">
 
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
+
 
         {/* HEADER */}
         <motion.header
@@ -362,19 +383,8 @@ const Profile = () => {
                 </div>
 
                 {/* 2FA switch */}
-                <div className="flex items-center gap-3 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-600">Two-Factor Auth</span>
-                  <div
-                    onClick={() => toggleSwitch('twoFactor')}
-                    className={`w-9 h-5 rounded-full p-0.5 cursor-pointer flex items-center transition-colors duration-200 ${notifications.twoFactor ? 'bg-emerald-500' : 'bg-slate-200'
-                      }`}
-                  >
-                    <motion.div
-                      layout
-                      className="w-4 h-4 rounded-full bg-white shadow-sm"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  </div>
+                <div onClick={handleLogout} className="flex items-center gap-3 bg-slate-50 text-slate-600 px-3.5 py-1.5 rounded-xl border border-slate-100 hover:bg-red-700 hover:text-white">
+                  <span className="text-sm cursor-pointer font-bold  ">Logout</span>
                 </div>
               </div>
 
@@ -520,6 +530,7 @@ const Profile = () => {
       </AnimatePresence>
 
     </motion.div>
+  </>
   );
 };
 

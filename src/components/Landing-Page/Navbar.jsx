@@ -35,7 +35,7 @@ const Navbar = () => {
                 dispatch(clearLogin());
                 dispatch(logout());
                 dispatch(setIsLoggedIn(false));
-                navigate("/SignIn-Up")
+                navigate("/spaces")
             }
         } catch (error) {
             console.error(error);

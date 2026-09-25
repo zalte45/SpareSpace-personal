@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { ThreeDot } from 'react-loading-indicators';
 import { useSelector, useDispatch } from 'react-redux';
-import {setLogin} from '../../redux/features/Login/loginSlice'
+import { setLogin } from '../../redux/features/Login/loginSlice'
 
 import { setIsLoggedIn } from '../../redux/features/User/user';
 
@@ -56,13 +56,13 @@ const SignIn = (props) => {
       let res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
-         "Content-Type": "application/json" 
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: signIn.email,
           password: signIn.password,
         }),
-        credentials: "include"  
+        credentials: "include"
       })
       let data = await res.json()
       console.log(data)
@@ -82,8 +82,15 @@ const SignIn = (props) => {
           transition: Bounce,
         });
         setTimeout(() => {
-          console.log("navigate runs")
-          navigate("/DashBoard")
+
+          if (data.user.Role == "Host") {
+            navigate("/DashBoard")
+            
+          }
+          if (data.user.Role == "Renter") {
+            
+            navigate("/spaces")
+          }
         }, 1000);
       } else {
         toast.error(data.Message || 'Invalid email or password', {

@@ -4,7 +4,9 @@ const initialState = {
     id: "",
     username: "",
     email: "",
-    verified:false
+    verified:false,
+    role:""
+
 }
 
 const loginSlice = createSlice({
@@ -16,6 +18,7 @@ const loginSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.verified = action.payload.verified;
+            state.role=action.payload.role
         },
         clearLogin: () => ({ ...initialState }),
     }
