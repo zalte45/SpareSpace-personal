@@ -14,38 +14,7 @@ const Navbar = () => {
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
     const navigate = useNavigate()
     const navbarRef = useRef(null);
-    const handleUser = async () => {
-        try {
-            let res = await fetch("http://localhost:3000/api/refreshToken", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include"
-            });
 
-            let data = await res.json()
-            console.log(data)
-            if (res.ok) {
-                console.log(isLoggedIn)
-                dispatch(setIsLoggedIn(true))
-                navigate("/DashBoard")
-            }
-            if (!res.ok) {
-                dispatch(clearLogin());
-                dispatch(logout());
-                dispatch(setIsLoggedIn(false));
-                navigate("/spaces")
-            }
-        } catch (error) {
-            console.error(error);
-            dispatch(clearLogin());
-            dispatch(logout());
-            dispatch(setIsLoggedIn(false));
-            navigate("/SignIn-Up")
-        }
-
-    }
 
     useLayoutEffect(() => {
         // Create GSAP context for proper scoping and cleanup on unmount
@@ -121,7 +90,7 @@ const Navbar = () => {
                         </button> */}
 
                     <button
-                        onClick={() => handleUser()}
+                        onClick={() => navigate('/spaces')}
                         className='cursor-pointer w-30 bg-[#2B7FFF] py-2 rounded-full text-white hover:scale-105 transition-transform'>Get Started</button>
 
                 </div>

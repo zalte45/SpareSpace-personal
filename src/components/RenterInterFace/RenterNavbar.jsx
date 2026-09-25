@@ -194,7 +194,7 @@ const RenterNavbar = () => {
                   Sign In
                 </Link>
                 <Link
-                  to="/SignIn-Up"
+                  to="/spaces"
                   className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#2B7FFF] hover:bg-blue-600 transition-colors shadow-xs hover:shadow-md"
                 >
                   Get Started
@@ -286,7 +286,7 @@ const RenterNavbar = () => {
                   Sign In
                 </Link>
                 <Link
-                  to="/SignIn-Up"
+                  to="/spaces"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-center px-4 py-2.5 bg-[#2B7FFF] text-white rounded-xl font-semibold"
                 >
