@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchMyBookings } from "../../../redux/features/Booking/bookingSlice";
@@ -11,7 +11,6 @@ import {
   ArrowRight,
   Search,
   CheckCircle2,
-  Clock,
 } from "lucide-react";
 
 const RenterDashboard = () => {
@@ -145,7 +144,7 @@ const RenterDashboard = () => {
                   {upcomingBookings[0].listing?.title || "Storage Rental"}
                 </h4>
                 <p className="text-xs text-gray-500">
-                  {upcomingBookings[0].startDate} → {upcomingBookings[0].endDate}
+                  {new Date(upcomingBookings[0].startDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })} → {new Date(upcomingBookings[0].endDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
                 </p>
               </div>
 

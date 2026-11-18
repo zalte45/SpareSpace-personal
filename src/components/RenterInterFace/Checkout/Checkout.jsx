@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchBookingById } from "../../../redux/features/Booking/bookingSlice";
+import {
+  fetchBookingById,
+  clearSelectedBooking,
+} from "../../../redux/features/Booking/bookingSlice";
 import {
   CreditCard,
   ShieldCheck,
@@ -9,7 +12,19 @@ import {
   ChevronLeft,
   Loader2,
   CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "N/A";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 const Checkout = () => {
   const { bookingId } = useParams();
@@ -24,6 +39,9 @@ const Checkout = () => {
     if (bookingId) {
       dispatch(fetchBookingById(bookingId));
     }
+    return () => {
+      dispatch(clearSelectedBooking());
+    };
   }, [dispatch, bookingId]);
 
   if (loading) {
@@ -35,21 +53,35 @@ const Checkout = () => {
     );
   }
 
-  const b = selectedBooking || {
-    _id: bookingId,
-    monthlyPrice: 2500,
-    durationMonths: 1,
-    securityDeposit: 1000,
-    platformFee: 125,
-    totalAmount: 3625,
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
-  };
+  if (error || !selectedBooking) {
+    return (
+      <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center max-w-lg mx-auto my-12 space-y-4 shadow-xs">
+        <AlertCircle size={48} className="mx-auto text-red-500" />
+        <h2 className="text-xl font-bold text-gray-900">Booking Not Found</h2>
+        <p className="text-sm text-gray-500">
+          {error || "We couldn't load the booking for checkout."}
+        </p>
+        <Link
+          to="/bookings"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2B7FFF] text-white font-semibold text-xs rounded-xl hover:bg-blue-600 transition-colors"
+        >
+          <ChevronLeft size={16} />
+          Go to My Bookings
+        </Link>
+      </div>
+    );
+  }
+
+  const b = selectedBooking;
+  const durationMonths = b.durationMonths || 1;
+  const monthlyPrice = b.monthlyPrice ?? 0;
+  const securityDeposit = b.securityDeposit ?? 0;
+  const platformFee = b.platformFee ?? 0;
+  const totalAmount = b.totalAmount ?? 0;
 
   const handlePayNow = async () => {
     setProcessing(true);
-    // As per requirements, payment integration is a separate task.
-    // The booking is already created and saved in the database with paymentStatus = 'pending'.
+    // Payment integration is handled separately; booking is saved in DB with paymentStatus = 'pending'.
     setTimeout(() => {
       setProcessing(false);
       setPaymentSuccess(true);
@@ -75,16 +107,19 @@ const Checkout = () => {
           <h1 className="text-2xl font-bold text-gray-900 mt-2">
             Confirm & Pay
           </h1>
+          {b.listing?.title && (
+            <p className="text-xs text-gray-500 mt-1">{b.listing.title}</p>
+          )}
         </div>
 
         {paymentSuccess ? (
           <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-2xl text-center space-y-3">
             <CheckCircle2 size={48} className="mx-auto text-emerald-500" />
             <h3 className="text-xl font-extrabold text-emerald-900">
-              Booking Request Received!
+              Booking Confirmed!
             </h3>
             <p className="text-sm text-emerald-700">
-              Your storage booking is saved (Payment integration pending). Redirecting to your bookings...
+              Your storage booking #{b._id} is saved (Payment status: {b.paymentStatus || "pending"}). Redirecting to your bookings...
             </p>
           </div>
         ) : (
@@ -94,36 +129,36 @@ const Checkout = () => {
               <div className="flex justify-between">
                 <span>Rental Period</span>
                 <span className="font-semibold text-gray-900">
-                  {b.startDate} → {b.endDate}
+                  {formatDate(b.startDate)} → {formatDate(b.endDate)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Duration</span>
                 <span className="font-semibold text-gray-900">
-                  {b.durationMonths || 1} Month(s)
+                  {durationMonths} Month(s)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Rent</span>
+                <span>Rent (₹{monthlyPrice} × {durationMonths} mo)</span>
                 <span className="font-semibold text-gray-900">
-                  ₹{(b.monthlyPrice || 2500) * (b.durationMonths || 1)}
+                  ₹{monthlyPrice * durationMonths}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Security Deposit</span>
                 <span className="font-semibold text-gray-900">
-                  ₹{b.securityDeposit || 1000}
+                  ₹{securityDeposit}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Platform Fee</span>
                 <span className="font-semibold text-gray-900">
-                  ₹{b.platformFee || 125}
+                  ₹{platformFee}
                 </span>
               </div>
               <div className="border-t border-gray-200 pt-2 flex justify-between text-sm font-extrabold text-gray-900">
                 <span>Total Amount Due</span>
-                <span className="text-[#2B7FFF]">₹{b.totalAmount || 3625}</span>
+                <span className="text-[#2B7FFF]">₹{totalAmount}</span>
               </div>
             </div>
 
@@ -154,7 +189,7 @@ const Checkout = () => {
               ) : (
                 <>
                   <Lock size={16} />
-                  Pay ₹{b.totalAmount || 3625} & Confirm Booking
+                  Pay ₹{totalAmount} & Confirm Booking
                 </>
               )}
             </button>

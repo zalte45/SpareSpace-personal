@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMyBookings } from "../../../redux/features/Booking/bookingSlice";
 import { Link } from "react-router-dom";
@@ -14,7 +14,18 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-const TABS = ["Upcoming", "Active", "Completed", "Cancelled"];
+const TABS = ["Upcoming", "Active", "Completed", "Cancelled", "Expired"];
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "N/A";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 const MyBookings = () => {
   const dispatch = useDispatch();
@@ -31,6 +42,7 @@ const MyBookings = () => {
     if (activeTab === "Active") return status === "active";
     if (activeTab === "Completed") return status === "completed";
     if (activeTab === "Cancelled") return status === "cancelled";
+    if (activeTab === "Expired") return status === "expired";
     return true;
   });
 
@@ -92,8 +104,16 @@ const MyBookings = () => {
         </div>
       )}
 
+      {/* Error */}
+      {!loading && error && (
+        <div className="flex items-center gap-2 p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700">
+          <AlertCircle size={16} className="shrink-0 text-red-500" />
+          <span>{error}</span>
+        </div>
+      )}
+
       {/* Empty State */}
-      {!loading && filteredBookings.length === 0 && (
+      {!loading && !error && filteredBookings.length === 0 && (
         <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center max-w-md mx-auto space-y-4 shadow-xs my-8">
           <div className="w-16 h-16 bg-[#E9F2FF] text-[#2B7FFF] rounded-2xl flex items-center justify-center mx-auto">
             <Building2 size={32} />
@@ -158,7 +178,7 @@ const MyBookings = () => {
                     <div className="flex items-center gap-1.5 text-xs text-gray-500">
                       <Calendar size={13} className="text-gray-400" />
                       <span>
-                        {b.startDate} → {b.endDate} ({b.durationMonths || 1} mo)
+                        {formatDate(b.startDate)} → {formatDate(b.endDate)} ({b.durationMonths || 1} mo)
                       </span>
                     </div>
                   </div>

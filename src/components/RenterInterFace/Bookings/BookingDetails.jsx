@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,24 +8,33 @@ import {
 } from "../../../redux/features/Booking/bookingSlice";
 import {
   ChevronLeft,
-  Calendar,
   MapPin,
   MessageSquare,
   XCircle,
   FileText,
-  ShieldCheck,
   Loader2,
   AlertCircle,
-  User,
 } from "lucide-react";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "N/A";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 const BookingDetails = () => {
   const { bookingId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { selectedBooking, loading, error } = useSelector((state) => state.booking);
-  const isLoggedIn = useSelector((state) => state.user?.isLoggedIn);
+  const { selectedBooking, loading, error, actionLoading } = useSelector(
+    (state) => state.booking
+  );
 
   useEffect(() => {
     if (bookingId) {
@@ -70,7 +79,10 @@ const BookingDetails = () => {
 
   const handleCancel = async () => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
-      await dispatch(cancelBooking(b._id));
+      const action = await dispatch(cancelBooking(b._id));
+      if (cancelBooking.rejected.match(action)) {
+        alert(action.payload || "Failed to cancel booking.");
+      }
     }
   };
 
@@ -142,11 +154,11 @@ const BookingDetails = () => {
         <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           <div>
             <span className="text-gray-400 block mb-0.5">Start Date</span>
-            <span className="font-bold text-gray-900 text-sm">{b.startDate}</span>
+            <span className="font-bold text-gray-900 text-sm">{formatDate(b.startDate)}</span>
           </div>
           <div>
             <span className="text-gray-400 block mb-0.5">End Date</span>
-            <span className="font-bold text-gray-900 text-sm">{b.endDate}</span>
+            <span className="font-bold text-gray-900 text-sm">{formatDate(b.endDate)}</span>
           </div>
           <div>
             <span className="text-gray-400 block mb-0.5">Total Duration</span>
@@ -220,13 +232,16 @@ const BookingDetails = () => {
             View Receipt
           </button>
 
-          {b.bookingStatus !== "cancelled" && (
+          {!["cancelled", "completed", "expired"].includes(
+            (b.bookingStatus || "").toLowerCase()
+          ) && (
             <button
               onClick={handleCancel}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-xs font-semibold cursor-pointer"
+              disabled={actionLoading}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50 rounded-xl text-xs font-semibold cursor-pointer"
             >
               <XCircle size={15} />
-              Cancel Booking
+              {actionLoading ? "Cancelling..." : "Cancel Booking"}
             </button>
           )}
         </div>
