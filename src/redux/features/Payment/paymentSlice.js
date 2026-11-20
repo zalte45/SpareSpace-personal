@@ -1,19 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
+import paymentApi from "../../../api/paymentApi";
 
 export const fetchTransactions = createAsyncThunk(
   "payment/fetchTransactions",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/payment`, { credentials: "include" });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch transactions");
-      }
-      return await res.json();
+      return await paymentApi.getTransactions();
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch transactions");
     }
   }
 );

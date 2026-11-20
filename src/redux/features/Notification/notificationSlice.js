@@ -1,19 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
+import notificationApi from "../../../api/notificationApi";
 
 export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/notification`, { credentials: "include" });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch notifications");
-      }
-      return await res.json();
+      return await notificationApi.getNotifications();
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch notifications");
     }
   }
 );
@@ -22,17 +16,9 @@ export const markAsRead = createAsyncThunk(
   "notification/markAsRead",
   async (notificationId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/notification/${notificationId}`, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to mark notification as read");
-      }
-      return await res.json();
+      return await notificationApi.markNotificationAsRead(notificationId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to mark notification as read");
     }
   }
 );

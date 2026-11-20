@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { updateField, resetForm, loadDraft } from '../../redux/features/Form/formSlice'
+import { createListing } from '../../redux/features/Listing/listingSlice'
 import Page1 from './Pages/Page1'
 import Page2 from './Pages/Page2'
 import Page3 from './Pages/Page3'
@@ -171,29 +172,13 @@ const ListSpace = () => {
     // Amenities
     newFormData.append("amenities", JSON.stringify(formData.amenities));
     try {
-      let res = await fetch("http://localhost:3000/api/listing", {
-        method: "POST",
-        credentials: "include",
-        body: newFormData
-      })
-      if (res.status === 401) {
-        let refreshRes = await fetch("http://localhost:3000/api/refreshToken", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include"
-        })
-        let res = await fetch("http://localhost:3000/api/listing", {
-          method: "POST",
-          credentials: "include",
-          body: newFormData
-        })
-        let refreshResData = await refreshRes.json()
-        console.log(refreshResData)
-      }
+      await dispatch(createListing(newFormData)).unwrap();
+      localStorage.removeItem("space_listing_draft");
+      dispatch(resetForm());
+      alert("Space listed successfully!");
     } catch (error) {
       console.error(error);
+      alert(error || "Failed to list space");
     }
   };
 

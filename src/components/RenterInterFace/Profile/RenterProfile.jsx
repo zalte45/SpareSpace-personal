@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setIsLoggedIn, logout } from "../../../redux/features/User/user";
-import { clearLogin } from "../../../redux/features/Login/loginSlice";
+import { logoutUser } from "../../../redux/features/Login/loginSlice";
 import { User, Shield, Bell, LogOut, Key, Save } from "lucide-react";
 
 const RenterProfile = () => {
@@ -21,10 +20,12 @@ const RenterProfile = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleLogout = () => {
-    dispatch(clearLogin());
-    dispatch(logout());
-    navigate("/SignIn-Up");
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+    } finally {
+      navigate("/SignIn-Up");
+    }
   };
 
   return (

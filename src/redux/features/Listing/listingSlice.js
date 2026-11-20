@@ -1,40 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
+import listingApi from "../../../api/listingApi";
 
 // Fetch all listings with search/filter/sort/pagination
 export const fetchListings = createAsyncThunk(
   "listing/fetchListings",
   async (params = {}, { rejectWithValue }) => {
     try {
-      const query = new URLSearchParams();
-
-      if (params.search) query.append("search", params.search);
-      if (params.city) query.append("city", params.city);
-      if (params.pincode) query.append("pincode", params.pincode);
-      if (params.category) query.append("category", params.category);
-      if (params.minPrice) query.append("minPrice", params.minPrice);
-      if (params.maxPrice) query.append("maxPrice", params.maxPrice);
-      if (params.minArea) query.append("minArea", params.minArea);
-      if (params.maxArea) query.append("maxArea", params.maxArea);
-      if (params.amenities) query.append("amenities", params.amenities);
-      if (params.sort) query.append("sort", params.sort);
-      if (params.page) query.append("page", params.page);
-      if (params.limit) query.append("limit", params.limit);
-      if (params.availableFrom) query.append("availableFrom", params.availableFrom);
-
-      const res = await fetch(`${API_BASE}/listing?${query.toString()}`, {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch listings");
-      }
-
-      return await res.json();
+      return await listingApi.getListings(params);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch listings");
     }
   }
 );
@@ -44,18 +18,33 @@ export const fetchListingById = createAsyncThunk(
   "listing/fetchListingById",
   async (listingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/listing/${listingId}`, {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch listing");
-      }
-
-      return await res.json();
+      return await listingApi.getListingById(listingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch listing");
+    }
+  }
+);
+
+// Create a new listing (FormData or JSON)
+export const createListing = createAsyncThunk(
+  "listing/createListing",
+  async (listingData, { rejectWithValue }) => {
+    try {
+      return await listingApi.createListing(listingData);
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to create listing");
+    }
+  }
+);
+
+// Fetch host's own spaces
+export const fetchMySpaces = createAsyncThunk(
+  "listing/fetchMySpaces",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await listingApi.getMySpaces();
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to fetch spaces");
     }
   }
 );
@@ -90,6 +79,15 @@ const initialState = {
   selectedListing: null,
   selectedLoading: false,
   selectedError: null,
+
+  // Host spaces
+  mySpaces: [],
+  mySpacesLoading: false,
+  mySpacesError: null,
+
+  // Create listing
+  createLoading: false,
+  createError: null,
 };
 
 const listingSlice = createSlice({
@@ -135,6 +133,7 @@ const listingSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to fetch listings";
       })
+
       // Fetch single listing
       .addCase(fetchListingById.pending, (state) => {
         state.selectedLoading = true;
@@ -147,6 +146,33 @@ const listingSlice = createSlice({
       .addCase(fetchListingById.rejected, (state, action) => {
         state.selectedLoading = false;
         state.selectedError = action.payload || "Failed to fetch listing";
+      })
+
+      // Create listing
+      .addCase(createListing.pending, (state) => {
+        state.createLoading = true;
+        state.createError = null;
+      })
+      .addCase(createListing.fulfilled, (state) => {
+        state.createLoading = false;
+      })
+      .addCase(createListing.rejected, (state, action) => {
+        state.createLoading = false;
+        state.createError = action.payload || "Failed to create listing";
+      })
+
+      // Fetch my spaces
+      .addCase(fetchMySpaces.pending, (state) => {
+        state.mySpacesLoading = true;
+        state.mySpacesError = null;
+      })
+      .addCase(fetchMySpaces.fulfilled, (state, action) => {
+        state.mySpacesLoading = false;
+        state.mySpaces = action.payload.listings || [];
+      })
+      .addCase(fetchMySpaces.rejected, (state, action) => {
+        state.mySpacesLoading = false;
+        state.mySpacesError = action.payload || "Failed to fetch spaces";
       });
   },
 });

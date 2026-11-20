@@ -1,19 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
+import messageApi from "../../../api/messageApi";
 
 export const fetchConversations = createAsyncThunk(
   "message/fetchConversations",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/message`, { credentials: "include" });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch conversations");
-      }
-      return await res.json();
+      return await messageApi.getConversations();
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch conversations");
     }
   }
 );
@@ -22,16 +16,9 @@ export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
   async (conversationId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/message/${conversationId}`, {
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch messages");
-      }
-      return await res.json();
+      return await messageApi.getMessages(conversationId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch messages");
     }
   }
 );
@@ -40,19 +27,9 @@ export const sendMessage = createAsyncThunk(
   "message/sendMessage",
   async ({ conversationId, recipientId, listingId, bookingId, content }, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/message`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId, recipientId, listingId, bookingId, content }),
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to send message");
-      }
-      return await res.json();
+      return await messageApi.sendMessage({ conversationId, recipientId, listingId, bookingId, content });
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to send message");
     }
   }
 );

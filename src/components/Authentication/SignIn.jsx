@@ -4,23 +4,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { ThreeDot } from 'react-loading-indicators';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLogin } from '../../redux/features/Login/loginSlice'
-
-import { setIsLoggedIn } from '../../redux/features/User/user';
-
+import { loginUser } from '../../redux/features/Login/loginSlice';
 
 const SignIn = (props) => {
-  const loginData = useSelector((state) => state.loginInfo)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
+  const loginData = useSelector((state) => state.loginInfo);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [signIn, setSignIn] = useState({
     email: "",
     password: ""
-  })
+  });
+
   const handleChange = (e) => {
-    setSignIn({ ...signIn, [e.target.name]: e.target.value })
-  }
+    setSignIn({ ...signIn, [e.target.name]: e.target.value });
+  };
+
   const submitForm = async () => {
     if (!signIn.email.trim()) {
       toast.error('Email is required', {
@@ -34,8 +33,7 @@ const SignIn = (props) => {
         theme: "light",
         transition: Bounce,
       });
-
-      return
+      return;
     }
     if (!signIn.password.trim()) {
       toast.error('Password is required !', {
@@ -49,27 +47,20 @@ const SignIn = (props) => {
         theme: "light",
         transition: Bounce,
       });
-      return
+      return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      let res = await fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+      const action = await dispatch(
+        loginUser({
           email: signIn.email,
           password: signIn.password,
-        }),
-        credentials: "include"
-      })
-      let data = await res.json()
-      console.log(data)
+        })
+      );
 
-      if (res.ok) {
-        dispatch(setIsLoggedIn(true))
-        dispatch(setLogin(data.user))
+      if (loginUser.fulfilled.match(action)) {
+        const data = action.payload;
+        const user = data?.user || data;
         toast.success('Login Successful !', {
           position: "top-right",
           autoClose: 5000,
@@ -82,18 +73,15 @@ const SignIn = (props) => {
           transition: Bounce,
         });
         setTimeout(() => {
-
-          if (data.user.Role == "Host") {
-            navigate("/DashBoard")
-            
-          }
-          if (data.user.Role == "Renter") {
-            
-            navigate("/spaces")
+          const role = (user?.Role || user?.role || "").toLowerCase();
+          if (role === "host") {
+            navigate("/DashBoard");
+          } else {
+            navigate("/spaces");
           }
         }, 1000);
       } else {
-        toast.error(data.Message || 'Invalid email or password', {
+        toast.error(action.payload || 'Invalid email or password', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -106,7 +94,7 @@ const SignIn = (props) => {
         });
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast.error('An error occurred during sign in. Please try again.', {
         position: "top-right",
         autoClose: 5000,
@@ -114,9 +102,10 @@ const SignIn = (props) => {
         transition: Bounce,
       });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+
   return (
     <div className='flex  h-screen items-center justify-center text-black'>
       <ToastContainer
@@ -180,6 +169,6 @@ const SignIn = (props) => {
       </div>
     </div>
   );
-}
+};
 
 export default SignIn;

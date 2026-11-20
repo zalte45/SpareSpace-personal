@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchMySpaces } from '../../redux/features/Listing/listingSlice';
 import {
   Plus,
   Search,
@@ -35,6 +37,7 @@ const scrollbarHiddenStyle = `
 
 
 const MySpace = ({ActivePage,setActivePage}) => {
+  const dispatch = useDispatch();
   const initialMockSpaces = [
     {
       id: null,
@@ -67,22 +70,16 @@ const MySpace = ({ActivePage,setActivePage}) => {
   useEffect(() => {
     async function fetchSpaces() {
       try {
-        const response = await fetch("http://localhost:3000/api/my-spaces", {
-          method: "POST",
-          credentials: "include"
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setSpaces(data.listings || []);
-          }
+        const action = await dispatch(fetchMySpaces());
+        if (fetchMySpaces.fulfilled.match(action)) {
+          setSpaces(action.payload.listings || []);
         }
       } catch (error) {
         console.error("Error fetching spaces:", error);
       }
     }
     fetchSpaces();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

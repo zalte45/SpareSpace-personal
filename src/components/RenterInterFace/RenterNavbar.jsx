@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsLoggedIn, logout } from "../../redux/features/User/user";
-import { clearLogin } from "../../redux/features/Login/loginSlice";
+import { logoutUser } from "../../redux/features/Login/loginSlice";
 import {
   Search,
   Heart,
@@ -33,14 +32,8 @@ const RenterNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:3000/api/logout", {
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout request error:", err);
+      await dispatch(logoutUser());
     } finally {
-      dispatch(clearLogin());
-      dispatch(logout());
       setUserDropdownOpen(false);
       navigate("/SignIn-Up");
     }

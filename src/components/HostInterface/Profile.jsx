@@ -20,10 +20,12 @@ import {
   Globe,
   X
 } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../../redux/features/Login/loginSlice';
 
 const Profile = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Account Form states
   const loginData = useSelector((state) => state.loginInfo)
 
@@ -99,28 +101,22 @@ const Profile = () => {
     triggerToast("Account deletion request submitted", "error");
   };
   const handleLogout = async () => {
-    let res = await fetch("http://localhost:3000/api/Logout", {
-      credentials: "include"
+    await dispatch(logoutUser());
+    toast.success('Logout Successful !', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
     });
-    if (res.ok) {
-      toast.success('Logout Successful !', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    }
-    let data = await res.json()
-    console.log(data)
-  }
+    setTimeout(() => {
+      navigate("/SignIn-Up");
+    }, 800);
+  };
 
 
   // Toggle switch helper

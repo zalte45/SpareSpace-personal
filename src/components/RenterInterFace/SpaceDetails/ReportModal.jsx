@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
+import reportApi from "../../../api/reportApi";
 
 const REPORT_REASONS = [
   "Fake listing",
@@ -23,25 +24,15 @@ const ReportModal = ({ listingId, isOpen, onClose }) => {
     setSubmitting(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId, reason, description }),
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        setSubmitted(true);
-        setTimeout(() => {
-          setSubmitted(false);
-          onClose();
-        }, 2000);
-      } else {
-        alert("Failed to submit report. Please try again.");
-      }
+      await reportApi.submitReport({ listingId, reason, description });
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 2000);
     } catch (err) {
       console.error(err);
-      alert("Network error.");
+      alert(err.message || "Failed to submit report. Please try again.");
     } finally {
       setSubmitting(false);
     }

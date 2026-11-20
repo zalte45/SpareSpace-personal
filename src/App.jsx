@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -8,8 +8,7 @@ import {
 
 import { Audio } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { setLogin, clearLogin } from "./redux/features/Login/loginSlice";
-import { setIsLoggedIn } from "./redux/features/User/user";
+import { restoreSession } from "./redux/features/Login/loginSlice";
 
 // Existing Components
 import Dashboard from "./components/Landing-Page/Dashboard";
@@ -35,60 +34,27 @@ import RenterProfile from "./components/RenterInterFace/Profile/RenterProfile";
 import Reviews from "./components/RenterInterFace/Reviews/Reviews";
 import HelpSupport from "./components/RenterInterFace/Help/HelpSupport";
 
+function ProtectedRoute({ children, isLoggedIn, loading }) {
+  if (loading) return null;
+  return isLoggedIn ? children : <Navigate to="/SignIn-Up" replace />;
+}
+
 function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function getMe() {
-      try {
-        let res = await fetch("http://localhost:3000/api/getMe", {
-          credentials: "include",
-        });
-
-        // Access token expired
-        if (res.status === 401) {
-          const refreshRes = await fetch(
-            "http://localhost:3000/api/refreshToken",
-            {
-              method: "POST",
-              credentials: "include",
-            }
-          );
-
-          if (refreshRes.ok) {
-            res = await fetch("http://localhost:3000/api/getMe", {
-              credentials: "include",
-            });
-          }
-        }
-
-        if (res.ok) {
-          const data = await res.json();
-          console.log(data);
-          dispatch(setLogin(data.user));
-          dispatch(setIsLoggedIn(true));
-        } else {
-          dispatch(clearLogin());
-          dispatch(setIsLoggedIn(false));
-        }
-      } catch (error) {
-        console.error(error);
-        dispatch(clearLogin());
-        dispatch(setIsLoggedIn(false));
-      } finally {
+    // Restore session on application startup through centralized architecture
+    dispatch(restoreSession())
+      .unwrap()
+      .catch(() => {
+        // Unauthenticated visitor on startup - settled safely
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    }
-    getMe();
+      });
   }, [dispatch]);
-
-  function ProtectedRoute({ children }) {
-    if (loading) return null;
-    return isLoggedIn ? children : <Navigate to="/SignIn-Up" replace />;
-  }
 
   if (loading) {
     return (
@@ -110,8 +76,6 @@ function App() {
       <Routes>
         {/* Landing Page */}
         <Route path="/" element={<Dashboard />} />
-        {/* <Route path="/RenterInterface" element={<Dashboard />} /> */}
-        
 
         {/* Authentication Routes */}
         <Route path="/SignIn-Up" element={<Home />} />
@@ -119,17 +83,17 @@ function App() {
         <Route
           path="/Verify"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
               <Verify />
             </ProtectedRoute>
           }
         />
 
-        {/* Existing Host Interface Route */}
+        {/* Host Interface Route */}
         <Route
           path="/DashBoard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
               <DashBoard_Host />
             </ProtectedRoute>
           }
@@ -145,7 +109,7 @@ function App() {
           <Route
             path="/renter/dashboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <RenterDashboard />
               </ProtectedRoute>
             }
@@ -153,7 +117,7 @@ function App() {
           <Route
             path="/favorites"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Favorites />
               </ProtectedRoute>
             }
@@ -161,7 +125,7 @@ function App() {
           <Route
             path="/bookings"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <MyBookings />
               </ProtectedRoute>
             }
@@ -169,7 +133,7 @@ function App() {
           <Route
             path="/bookings/:bookingId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <BookingDetails />
               </ProtectedRoute>
             }
@@ -177,7 +141,7 @@ function App() {
           <Route
             path="/checkout/:bookingId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Checkout />
               </ProtectedRoute>
             }
@@ -185,7 +149,7 @@ function App() {
           <Route
             path="/payments"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Transactions />
               </ProtectedRoute>
             }
@@ -193,7 +157,7 @@ function App() {
           <Route
             path="/messages"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Messages />
               </ProtectedRoute>
             }
@@ -201,7 +165,7 @@ function App() {
           <Route
             path="/notifications"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Notifications />
               </ProtectedRoute>
             }
@@ -209,7 +173,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <RenterProfile />
               </ProtectedRoute>
             }
@@ -217,7 +181,7 @@ function App() {
           <Route
             path="/reviews"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute isLoggedIn={isLoggedIn} loading={loading}>
                 <Reviews />
               </ProtectedRoute>
             }

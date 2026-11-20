@@ -4,10 +4,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { ThreeDot } from 'react-loading-indicators';
+import { useDispatch } from 'react-redux';
+import {
+    requestForgotOtp,
+    verifyForgotOtp,
+    resetPassword,
+} from '../../redux/features/Login/loginSlice';
 
 
 const Forgot = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [IsRight, setIsRight] = useState(true)
     const [timer, setTimer] = useState(30)
     const [isTimer, setIsTimer] = useState(false)
@@ -57,22 +64,11 @@ const Forgot = () => {
             });
             return;
         }
-        setIsOtpLoading(true)
+        setIsOtpLoading(true);
         try {
-            let res = await fetch("http://localhost:3000/api/forgotOtp", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: Form.email
-                })
-            })
-            const data = await res.json()
-            console.log(res.status)
-            console.log(data)
-            if (res.ok) {
-                toast(res.data, {
+            const action = await dispatch(requestForgotOtp({ email: Form.email }));
+            if (requestForgotOtp.fulfilled.match(action)) {
+                toast(action.payload?.message || action.payload?.Message || 'OTP sent successfully!', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -83,12 +79,10 @@ const Forgot = () => {
                     theme: "light",
                     transition: Bounce,
                 });
-                console.log("otp sent")
-                setTimer(30);     // Reset timer
-                setIsTimer(true); // Start countdown
-            }
-            if (!res.ok) {
-                toast("Something went wrong !", {
+                setTimer(30);
+                setIsTimer(true);
+            } else {
+                toast.error(action.payload || 'Something went wrong !', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -101,7 +95,7 @@ const Forgot = () => {
                 });
             }
         } catch (error) {
-            toast(error, {
+            toast.error(error.message || 'Something went wrong', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -113,66 +107,42 @@ const Forgot = () => {
                 transition: Bounce,
             });
         } finally {
-            setIsOtpLoading(false)
+            setIsOtpLoading(false);
         }
     }
 
     const verifyOtp = async () => {
-        setIsVerifyLoading(true)
+        setIsVerifyLoading(true);
         try {
-            let res = await fetch("http://localhost:3000/api/forgotOtpVerify", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+            const action = await dispatch(
+                verifyForgotOtp({
                     email: Form.email,
-                    otp: Form.otp
+                    otp: Form.otp,
                 })
-            })
-            if (res.ok) {
-                setIsRight(false)
-                console.log("otp verified !")
+            );
+            if (verifyForgotOtp.fulfilled.match(action)) {
+                setIsRight(false);
+                const data = action.payload;
+                if (data?.resetToken) {
+                    localStorage.setItem("token", data.resetToken);
+                    setToken(data.resetToken);
+                }
+            } else {
+                toast.error(action.payload || 'Failed to verify OTP', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    theme: "light",
+                    transition: Bounce,
+                });
             }
-            const data = await res.json()
-            localStorage.setItem("token", data.resetToken)
-            setToken(localStorage.getItem("token"))
-            console.log(localStorage.getItem("token"))
         } catch (error) {
-            console.error(error)
+            console.error(error);
         } finally {
-            setIsVerifyLoading(false)
+            setIsVerifyLoading(false);
         }
     }
 
-    // const Verify = async () => {
-    //     try {
-    //         let res = fetch("http://localhost:3000/api/forgotOtpVerify", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //             body: JSON.stringify({
-    //                 opt: Form.otp,
-    //                 email: Form.email
-    //             })
-    //         })
-    //         if (res.ok) {
-    //             console.log("Otp verified")
-    //             setTimeout(() => {
-    //                 navigate("/SignIn-Up")
-    //             }, 1000)
-    //         }
 
-    //         const data = await res.json()
-    //         console.log(data)
-
-    //     } catch (error) {
-    //         console.error(error)
-    //     } finally {
-    //         setIsVerifyLoading(false)
-    //     }
-    // }
 
     const handleReset = async () => {
         setIsResetLoading(true)
@@ -195,17 +165,14 @@ const Forgot = () => {
             console.log(
                 Form.confirmPassword,
                 token)
-            let res = await fetch("http://localhost:3000/api/newPassword", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+            const action = await dispatch(
+                resetPassword({
                     password: Form.confirmPassword,
-                    resetToken: token
+                    resetToken: token,
                 })
-            })
-            if (res.ok) {
+            );
+
+            if (resetPassword.fulfilled.match(action)) {
                 toast('Password reset successful!', {
                     position: "top-right",
                     autoClose: 5000,
@@ -217,11 +184,11 @@ const Forgot = () => {
                     theme: "light",
                     transition: Bounce,
                 });
-            }
-            if (!res.ok) {
-                const data = await res.json()
-
-                toast(data.Message, {
+                setTimeout(() => {
+                    navigate("/SignIn-Up");
+                }, 1500);
+            } else {
+                toast.error(action.payload || 'Password reset failed', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,

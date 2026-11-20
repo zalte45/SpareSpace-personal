@@ -1,11 +1,14 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
-import SignIn from './SignIn'
+import SignIn from './SignIn';
 import { useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../../redux/features/Login/loginSlice';
 
 const Signup = (props) => {
+  const dispatch = useDispatch();
   const [Role, setRole] = useState("")
   useEffect(() => {
 
@@ -86,29 +89,20 @@ const Signup = (props) => {
         return
       }
 
-      let res = await fetch("http://localhost:3000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+      const action = await dispatch(
+        registerUser({
           username: Form.username,
           email: Form.email,
           password: Form.password,
-          role: Form.Role
-        }),
-        credentials: "include"
-      })
-      if (!res.ok) {
-        let data = await res.json()
-        console.log(data)
-        await setState(res.status)
+          role: Form.Role.toLowerCase() === "host" ? "host" : "renter",
+        })
+      );
 
-      }
-      if (res.ok) {
-        localStorage.setItem("verifyToken", data.verifyToken)
-        const verifyToken = localStorage.getItem("verifyToken")
-        console.log(verifyToken)
+      if (registerUser.fulfilled.match(action)) {
+        const data = action.payload;
+        if (data?.verifyToken) {
+          localStorage.setItem("verifyToken", data.verifyToken);
+        }
         toast.success('Account Created Successfully !', {
           position: "top-right",
           autoClose: 8000,
@@ -121,10 +115,10 @@ const Signup = (props) => {
           transition: Bounce,
         });
         setTimeout(() => {
-          navigate("/Verify")
+          navigate("/Verify");
         }, 1500);
       } else {
-        toast.error(data.Message || 'Registration failed!', {
+        toast.error(action.payload || 'Registration failed!', {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,

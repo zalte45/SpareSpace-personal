@@ -17,40 +17,6 @@ const Home = () => {
     
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [ActivePage, setActivePage] = useState("DashBoard");
-    // useEffect(() => {
-    //     async function getMe() {
-    //         try {
-    //             let res = await fetch("http://localhost:3000/api/getMe", {
-    //                 credentials: "include"
-    //             });
-                
-    //         } catch (error) {
-    //             console.error(error)
-    //         }
-    //     }
-    //     getMe()
-
-    // }, [])
-    // useEffect(() => {
-    //     console.log("Home runs")
-    //     async function refreshToken() {
-    //         try {
-    //             let res = await fetch("http://localhost:3000/api/refreshToken", {
-    //                 method: "POST",
-    //                 credentials: "include"
-    //             });
-    //             if (!res.ok) {
-    //                 const data = await res.json();
-    //                 console.log(data)
-    //             }
-    //         } catch (error) {
-    //             console.error(error)
-    //         }
-    //     }
-    //     refreshToken()
-    // }, [])
-
-
 
     return (
         <>

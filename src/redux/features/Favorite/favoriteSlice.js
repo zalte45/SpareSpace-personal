@@ -1,21 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
+import favoriteApi from "../../../api/favoriteApi";
 
 export const fetchFavorites = createAsyncThunk(
   "favorite/fetchFavorites",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/favorite`, {
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to fetch favorites");
-      }
-      return await res.json();
+      return await favoriteApi.getFavorites();
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch favorites");
     }
   }
 );
@@ -24,19 +16,9 @@ export const toggleFavorite = createAsyncThunk(
   "favorite/toggleFavorite",
   async (listingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/favorite`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId }),
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Failed to toggle favorite");
-      }
-      return await res.json();
+      return await favoriteApi.toggleFavorite(listingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to toggle favorite");
     }
   }
 );

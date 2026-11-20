@@ -1,36 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE = "http://localhost:3000/api";
-
-const parseJsonSafe = async (res) => {
-  try {
-    return await res.json();
-  } catch {
-    return {};
-  }
-};
+import bookingApi from "../../../api/bookingApi";
 
 export const previewBooking = createAsyncThunk(
   "booking/previewBooking",
   async ({ listingId, startDate, endDate, durationMonths }, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:3000/api/booking/preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId, startDate, endDate, durationMonths }),
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        const msg = (data.message || "Space is not available for selected dates").replace(
-          /^Message from available check:\s*/i,
-          ""
-        );
-        return rejectWithValue(msg);
-      }
-      return data;
+      return await bookingApi.previewBooking({ listingId, startDate, endDate, durationMonths });
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      const msg = (error.message || "Space is not available for selected dates").replace(
+        /^Message from available check:\s*/i,
+        ""
+      );
+      return rejectWithValue(msg);
     }
   }
 );
@@ -39,17 +20,9 @@ export const fetchMyBookings = createAsyncThunk(
   "booking/fetchMyBookings",
   async (status = "", { rejectWithValue }) => {
     try {
-      const url = status
-        ? `${API_BASE}/booking?status=${encodeURIComponent(status)}`
-        : `${API_BASE}/booking`;
-      const res = await fetch(url, { credentials: "include" });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to fetch bookings");
-      }
-      return data;
+      return await bookingApi.getMyBookings(status);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch bookings");
     }
   }
 );
@@ -58,17 +31,9 @@ export const fetchHostBookings = createAsyncThunk(
   "booking/fetchHostBookings",
   async (status = "", { rejectWithValue }) => {
     try {
-      const url = status
-        ? `${API_BASE}/booking/host?status=${encodeURIComponent(status)}`
-        : `${API_BASE}/booking/host`;
-      const res = await fetch(url, { credentials: "include" });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to fetch host bookings");
-      }
-      return data;
+      return await bookingApi.getHostBookings(status);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch host bookings");
     }
   }
 );
@@ -77,16 +42,9 @@ export const fetchBookingById = createAsyncThunk(
   "booking/fetchBookingById",
   async (bookingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/booking/${bookingId}`, {
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to fetch booking details");
-      }
-      return data;
+      return await bookingApi.getBookingById(bookingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch booking details");
     }
   }
 );
@@ -95,16 +53,9 @@ export const fetchHostBookingById = createAsyncThunk(
   "booking/fetchHostBookingById",
   async (bookingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/booking/host/${bookingId}`, {
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to fetch host booking details");
-      }
-      return data;
+      return await bookingApi.getHostBookingById(bookingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to fetch host booking details");
     }
   }
 );
@@ -113,19 +64,9 @@ export const createBooking = createAsyncThunk(
   "booking/createBooking",
   async (bookingData, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/booking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookingData),
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to create booking");
-      }
-      return data;
+      return await bookingApi.createBooking(bookingData);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to create booking");
     }
   }
 );
@@ -134,17 +75,9 @@ export const cancelBooking = createAsyncThunk(
   "booking/cancelBooking",
   async (bookingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/booking/${bookingId}/cancel`, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to cancel booking");
-      }
-      return data;
+      return await bookingApi.cancelBooking(bookingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to cancel booking");
     }
   }
 );
@@ -153,17 +86,9 @@ export const completeBooking = createAsyncThunk(
   "booking/completeBooking",
   async (bookingId, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_BASE}/booking/${bookingId}/complete`, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      const data = await parseJsonSafe(res);
-      if (!res.ok) {
-        return rejectWithValue(data.message || "Failed to complete booking");
-      }
-      return data;
+      return await bookingApi.completeBooking(bookingId);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.message || "Failed to complete booking");
     }
   }
 );
