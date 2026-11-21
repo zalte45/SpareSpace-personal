@@ -187,7 +187,7 @@ const MySpace = ({ActivePage,setActivePage}) => {
 
               <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-500">
                 <TrendingUp className="w-3.5 h-3.5" />
-                Ready to rent immediately
+                Ready to rent immediately 
               </p>
             </div>
 
@@ -258,7 +258,7 @@ const MySpace = ({ActivePage,setActivePage}) => {
 
                 <div
                   key={space.id || space._id}
-                  className="mt-4 w-80 overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                  className="cursor-pointer mt-4 w-80 overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
                 >
                   {/* Image */}
                   <div className="relative h-40">
